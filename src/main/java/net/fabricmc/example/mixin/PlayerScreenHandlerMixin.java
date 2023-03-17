@@ -1,6 +1,5 @@
 package net.fabricmc.example.mixin;
 
-import net.fabricmc.example.drawables.MapSlotsWidget;
 import net.fabricmc.example.utils.MapSlot;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.screen.AbstractRecipeScreenHandler;
