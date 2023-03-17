@@ -2,6 +2,7 @@ package net.fabricmc.example.mixin;
 
 import net.fabricmc.example.ExampleMod;
 import net.fabricmc.example.drawables.MapSlotsWidget;
+import net.fabricmc.example.utils.MapSlotsHandler;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -23,7 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
 	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(
 			ExampleMod.LOGGER.getName(), "textures/gui/map_button.png");
-	private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
+	private final MapSlotsWidget mapSlotsWidget =
+			((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
 	private TexturedButtonWidget recipeBookButton;
 	private TexturedButtonWidget mapButton;
 	@Shadow @Final private static Identifier RECIPE_BUTTON_TEXTURE;
@@ -68,7 +70,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 			this.mapButton.active
 					=! this.mapButton.active;
 
-		if (MapSlotsWidget.isOpen()) {
+		if (this.mapSlotsWidget.isOpen()) {
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
 			this.recipeBookButton.active
@@ -79,7 +81,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
 	@Inject(at = @At("JUMP"), method = "render")
 	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (MapSlotsWidget.isOpen())
+		if (this.mapSlotsWidget.isOpen())
 			this.mapSlotsWidget.render(matrices, mouseX, mouseY, delta);
 	}
 

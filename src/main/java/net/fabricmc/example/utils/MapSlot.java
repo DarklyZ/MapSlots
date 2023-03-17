@@ -5,15 +5,18 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.slot.Slot;
 
 public class MapSlot extends Slot {
-    public MapSlot(int x, int y) {
-        this(new MapSlotsInv(), 0, x, y);
+    private final MapSlotsWidget mapSlotsWidget;
+
+    public MapSlot(MapSlotsWidget mapSlotsWidget, int offX, int offY) {
+        this(new MapSlotsInv(), mapSlotsWidget, offX, offY);
     }
 
-    public MapSlot(Inventory inventory, int index, int x, int y) {
-        super(inventory, index, x, y);
+    public MapSlot(Inventory inventory, MapSlotsWidget mapSlotsWidget, int offX, int offY) {
+        super(inventory, inventory.size()-1, (-MapSlotsWidget.width/2-10) + (offX*18), (MapSlotsWidget.height/2-8) + (offY*18));
+        this.mapSlotsWidget = mapSlotsWidget;
     }
 
     public boolean isEnabled() {
-        return MapSlotsWidget.isOpen();
+        return this.mapSlotsWidget.isOpen();
     }
 }

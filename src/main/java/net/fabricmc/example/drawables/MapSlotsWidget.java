@@ -9,17 +9,14 @@ import net.minecraft.util.Identifier;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
-    private static boolean open = false;
-    private static final int width = 166;
-    private static final int height = 166;
+    public static final int width = 166;
+    public static final int height = 166;
+    private boolean open = false;
     private int parentX;
     private int parentY;
 
-    public static int getWidth() { return width; }
-    public static int getHeight() { return height; }
-
-    public static boolean isOpen() { return open; }
-    public void setOpen(boolean opened) { open = opened; }
+    public boolean isOpen() { return this.open; }
+    public void setOpen(boolean opened) { this.open = opened; }
     public void toggleOpen() { this.setOpen(!isOpen()); }
 
     public void initialize(int parentX, int parentY) {
