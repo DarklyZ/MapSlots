@@ -5,7 +5,6 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(PlayerScreenHandler.class)
