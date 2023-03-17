@@ -1,5 +1,6 @@
 package net.fabricmc.example.utils;
 
+import net.fabricmc.example.drawables.MapSlotsWidget;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.slot.Slot;
 
@@ -13,6 +14,6 @@ public class MapSlot extends Slot {
     }
 
     public boolean isEnabled() {
-        return true;
+        return MapSlotsWidget.isOpen();
     }
 }

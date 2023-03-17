@@ -68,7 +68,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 			this.mapButton.active
 					=! this.mapButton.active;
 
-		if (this.mapSlotsWidget.isOpen()) {
+		if (MapSlotsWidget.isOpen()) {
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
 			this.recipeBookButton.active
@@ -79,7 +79,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
 	@Inject(at = @At("JUMP"), method = "render")
 	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (this.mapSlotsWidget.isOpen())
+		if (MapSlotsWidget.isOpen())
 			this.mapSlotsWidget.render(matrices, mouseX, mouseY, delta);
 	}
 

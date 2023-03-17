@@ -18,9 +18,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     public static int getWidth() { return width; }
     public static int getHeight() { return height; }
 
-    public boolean isOpen() { return open; }
+    public static boolean isOpen() { return open; }
     public void setOpen(boolean opened) { open = opened; }
-    public void toggleOpen() { this.setOpen(!this.isOpen()); }
+    public void toggleOpen() { this.setOpen(!isOpen()); }
 
     public void initialize(int parentX, int parentY) {
         this.parentX = parentX;
@@ -28,7 +28,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     }
 
     public int getMoveX(int parentX) {
-        this.parentX = parentX + (this.isOpen() ? width / 2 : -width / 2);
+        this.parentX = parentX + (isOpen() ? width / 2 : -width / 2);
         return this.parentX;
     }
 
@@ -46,6 +46,6 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     }
 
     public boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        return !this.isOpen() || mouseX < (double)left-2 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
+        return !isOpen() || mouseX < (double)left-2 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
     }
 }
