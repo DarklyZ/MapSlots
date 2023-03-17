@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
@@ -54,7 +55,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	}
 
 	@Inject(at = @At("TAIL"), method = "init")
-	private void init(CallbackInfo info) {
+	private void init(CallbackInfo ci) {
 		this.mapSlotsWidget.initialize(this.x, this.y);
 
 		this.clearChildren();
@@ -76,15 +77,19 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "render")
-	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo info) {
-		if (this.mapSlotsWidget.isOpen()) {
+	@Inject(at = @At("JUMP"), method = "render")
+	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+		if (this.mapSlotsWidget.isOpen())
 			this.mapSlotsWidget.render(matrices, mouseX, mouseY, delta);
-		}
 	}
 
 	private void updatePositionButtons() {
 		this.recipeBookButton.setPos(this.x + 104, this.height / 2 - 22);
 		this.mapButton.setPos(this.x + (this.recipeBookButton.active ? 126 : 104), this.height / 2 - 22);
+	}
+
+	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
+	public void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY, left, top) && cir.getReturnValue());
 	}
 }

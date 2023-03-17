@@ -15,11 +15,12 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     private int parentX;
     private int parentY;
 
+    public static int getWidth() { return width; }
+    public static int getHeight() { return height; }
+
     public boolean isOpen() { return open; }
     public void setOpen(boolean opened) { open = opened; }
-    public void toggleOpen() {
-        this.setOpen(!this.isOpen());
-    }
+    public void toggleOpen() { this.setOpen(!this.isOpen()); }
 
     public void initialize(int parentX, int parentY) {
         this.parentX = parentX;
@@ -42,5 +43,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
         drawTexture(matrices, this.parentX-2 - width, this.parentY, width, height, 0, 0, 64, 64, 64, 64);
 
         matrices.pop();
+    }
+
+    public boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
+        return !this.isOpen() || mouseX < (double)left-2 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
     }
 }
