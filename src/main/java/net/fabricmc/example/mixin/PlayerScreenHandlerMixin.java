@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(PlayerScreenHandler.class)
 public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> {
-    private final Slot mapSlot = this.addSlot(new MapSlot());
+    private final MapSlot mapSlot = (MapSlot)this.addSlot(new MapSlot());
 
     public PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
         super(screenHandlerType, i);
