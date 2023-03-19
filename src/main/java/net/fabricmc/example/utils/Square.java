@@ -3,9 +3,9 @@ package net.fabricmc.example.utils;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
-import java.awt.*;
+import java.awt.Color;
 
-public class Square {
+public class Square extends DrawableHelper {
     public static final int side = 30;
     private final int x, y, offX, offY;
 
@@ -22,6 +22,6 @@ public class Square {
     public int getY2() { return this.y + side; }
 
     public void drawSelection(MatrixStack matrices) {
-        DrawableHelper.fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
+        fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
     }
 }
