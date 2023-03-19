@@ -1,16 +1,21 @@
 package net.fabricmc.example.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.example.utils.Square;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
     public static final int width = 166;
     public static final int height = 166;
+    public final Inventory inventory = new SimpleInventory(3);
     private boolean open = false;
     private int parentX;
     private int parentY;
@@ -19,11 +24,21 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     public void setOpen(boolean opened) { this.open = opened; }
     public void toggleOpen() { this.setOpen(!isOpen()); }
 
+    public boolean isChangeMode() {
+        return this.inventory.getStack(0) != ItemStack.EMPTY;
+    }
+
+    public Square getSquare(int mouseX, int mouseY) {
+        int centerX = this.parentX-2 - width/2;
+        int centerY = this.parentY + height/2;
+        return new Square(centerX, centerY, mouseX, mouseY);
+    }
+
     public void initialize(int parentX, int parentY) {
         this.parentX = parentX;
         this.parentY = parentY;
     }
-
+    
     public int getMoveX(int parentX) {
         this.parentX = parentX + (isOpen() ? width / 2 : -width / 2);
         return this.parentX;
@@ -39,10 +54,13 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
 
         drawTexture(matrices, this.parentX-2 - width, this.parentY, width, height, 0, 0, 64, 64, 64, 64);
 
+        if (this.isChangeMode())
+            this.getSquare(mouseX, mouseY).drawSelection(matrices);
+
         matrices.pop();
     }
 
     public boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        return !isOpen() || mouseX < (double)left-2 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
+        return !isOpen() || mouseX < (double)left-20 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
     }
 }
