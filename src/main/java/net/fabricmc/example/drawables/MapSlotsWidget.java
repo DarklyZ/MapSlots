@@ -27,7 +27,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     }
 
     public Chunk getChunk(int mouseX, int mouseY) {
-        return new Chunk(this.parentX-2 - side, this.parentY, side, mouseX, mouseY);
+        return Chunk.ofMouse(this.parentX-2 - side, this.parentY, side, mouseX, mouseY);
     }
 
     public void initialize(int parentX, int parentY) {
