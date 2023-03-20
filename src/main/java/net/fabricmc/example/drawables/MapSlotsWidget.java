@@ -1,7 +1,7 @@
 package net.fabricmc.example.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.example.utils.Square;
+import net.fabricmc.example.utils.Chunk;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
@@ -13,8 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
-    public static final int width = 166;
-    public static final int height = 166;
+    public static final int side = 166;
     public final Inventory inventory = new SimpleInventory(3);
     private boolean open = false;
     private int parentX;
@@ -28,10 +27,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
         return this.inventory.getStack(0) != ItemStack.EMPTY;
     }
 
-    public Square getSquare(int mouseX, int mouseY) {
-        int centerX = this.parentX-2 - width/2;
-        int centerY = this.parentY + height/2;
-        return new Square(centerX, centerY, mouseX, mouseY);
+    public Chunk getChunk(int mouseX, int mouseY) {
+        return new Chunk(this.parentX-2 - side, this.parentY, side, mouseX, mouseY);
     }
 
     public void initialize(int parentX, int parentY) {
@@ -40,7 +37,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     }
     
     public int getMoveX(int parentX) {
-        this.parentX = parentX + (isOpen() ? width / 2 : -width / 2);
+        this.parentX = parentX + (isOpen() ? side / 2 : -side / 2);
         return this.parentX;
     }
 
@@ -52,15 +49,15 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        drawTexture(matrices, this.parentX-2 - width, this.parentY, width, height, 0, 0, 64, 64, 64, 64);
+        drawTexture(matrices, this.parentX-2 - side, this.parentY, side, side, 0, 0, 64, 64, 64, 64);
 
         if (this.isChangeMode())
-            this.getSquare(mouseX, mouseY).drawSelection(matrices);
+            this.getChunk(mouseX, mouseY).drawSelection(matrices);
 
         matrices.pop();
     }
 
     public boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        return !isOpen() || mouseX < (double)left-20 - width || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + height;
+        return !isOpen() || mouseX < (double)left-20 - side || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + side;
     }
 }

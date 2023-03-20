@@ -4,6 +4,7 @@ import net.fabricmc.example.ExampleMod;
 import net.fabricmc.example.drawables.MapSlotsWidget;
 import net.fabricmc.example.utils.MapSlotsHandler;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
@@ -56,7 +57,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 		});
 	}
 
-	@Inject(at = @At("TAIL"), method = "init")
+	@Inject(at = @At(value = "TAIL"), method = "init")
 	private void init(CallbackInfo ci) {
 		this.mapSlotsWidget.initialize(this.x, this.y);
 
