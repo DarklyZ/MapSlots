@@ -1,10 +1,9 @@
 package net.fabricmc.example.utils;
 
-import net.fabricmc.example.ExampleMod;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class Chunk extends DrawableHelper {
     public static final int side = 30;
