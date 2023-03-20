@@ -24,8 +24,6 @@ public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandl
         super(screenHandlerType, i);
     }
 
-    public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
-
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
         this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -MapSlotsWidget.side - 20, 2) {
@@ -39,4 +37,6 @@ public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandl
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
     }
+
+    public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
 }
