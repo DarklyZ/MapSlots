@@ -24,7 +24,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     public void toggleOpen() { this.setOpen(!isOpen()); }
 
     public boolean isChangeMode() {
-        return this.inventory.getStack(0) != ItemStack.EMPTY;
+        return !this.inventory.getStack(0).isEmpty();
     }
 
     public Chunk getChunk(int mouseX, int mouseY) {
