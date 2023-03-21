@@ -2,6 +2,7 @@ package net.fabricmc.example.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.example.utils.Chunk;
+import net.fabricmc.example.utils.Square;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
@@ -10,9 +11,9 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.util.Identifier;
 
-public class MapSlotsWidget extends DrawableHelper implements Drawable {
+public class MapSlotsWidget extends DrawableHelper implements Drawable, Square {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
-    public static final int side = 166;
+    private static final int side = 166;
     public final Inventory inventory = new SimpleInventory(3);
     private boolean open = false;
     private int parentX;
@@ -27,7 +28,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     }
 
     public Chunk getChunk(int mouseX, int mouseY) {
-        return Chunk.ofMouse(this.parentX-2 - side, this.parentY, side, mouseX, mouseY);
+        return Chunk.ofMouse(this, mouseX, mouseY);
     }
 
     public void initialize(int parentX, int parentY) {
@@ -48,7 +49,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        drawTexture(matrices, this.parentX-2 - side, this.parentY, side, side, 0, 0, 64, 64, 64, 64);
+        drawTexture(matrices, this.getSqX(), this.getSqY(), side, side, 0, 0, 64, 64, 64, 64);
 
         if (this.isChangeMode())
             this.getChunk(mouseX, mouseY).drawSelection(matrices);
@@ -59,4 +60,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable {
     public boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         return !isOpen() || mouseX < (double)left-20 - side || mouseY < (double)top || mouseX >= (double)left-2 || mouseY >= (double)top + side;
     }
+
+    public int getSqX() { return this.parentX-2 - side; }
+    public int getSqY() { return this.parentY; }
+    public int getSqSide() { return side; }
 }

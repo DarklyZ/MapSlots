@@ -26,14 +26,14 @@ public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandl
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -MapSlotsWidget.side - 20, 2) {
+        this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.getSqSide() - 20, 2) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
             public boolean canInsert(ItemStack stack) { return stack.isOf(Items.FILLED_MAP); }
         });
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -MapSlotsWidget.side - 20, 20) {
+        this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.getSqSide() - 20, 20) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 2, -MapSlotsWidget.side - 20, 38) {
+        this.addSlot(new Slot(mapSlotsWidget.inventory, 2, -mapSlotsWidget.getSqSide() - 20, 38) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
     }
