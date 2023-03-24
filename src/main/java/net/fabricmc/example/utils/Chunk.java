@@ -52,6 +52,10 @@ public class Chunk extends DrawableHelper {
     }
 
     public void drawSelection(MatrixStack matrices) {
+        matrices.push();
+
         fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
+
+        matrices.pop();
     }
 }
