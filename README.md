@@ -1,4 +1,4 @@
-# Fabric Example Mod
+# Map Slots Mod
 
 ## Setup
 
