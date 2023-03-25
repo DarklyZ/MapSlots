@@ -1,4 +1,4 @@
-package net.fabricmc.example.utils;
+package darklyz.mapslots.utils;
 
 public interface Region {
     int getInX();

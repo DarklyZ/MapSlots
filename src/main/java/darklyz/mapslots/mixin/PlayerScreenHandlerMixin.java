@@ -1,7 +1,7 @@
-package net.fabricmc.example.mixin;
+package darklyz.mapslots.mixin;
 
-import net.fabricmc.example.drawables.MapSlotsWidget;
-import net.fabricmc.example.utils.MapSlotsHandler;
+import darklyz.mapslots.drawables.MapSlotsWidget;
+import darklyz.mapslots.utils.MapSlotsHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;

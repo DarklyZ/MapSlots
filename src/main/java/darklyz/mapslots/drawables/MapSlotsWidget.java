@@ -1,8 +1,8 @@
-package net.fabricmc.example.drawables;
+package darklyz.mapslots.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.example.utils.Chunk;
-import net.fabricmc.example.utils.Region;
+import darklyz.mapslots.utils.Chunk;
+import darklyz.mapslots.utils.Region;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
