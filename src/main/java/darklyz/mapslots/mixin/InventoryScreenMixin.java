@@ -26,7 +26,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 			ExampleMod.LOGGER.getName(), "textures/gui/map_button.png");
 	private final MapSlotsWidget mapSlotsWidget =
 			((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
-	private TexturedButtonWidget recipeBookButton;
+	private TexturedButtonWidget bookButton;
 	private TexturedButtonWidget mapButton;
 	@Shadow @Final private static Identifier RECIPE_BUTTON_TEXTURE;
 	@Shadow @Final private RecipeBookWidget recipeBook;
@@ -37,21 +37,19 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	}
 
 	private void initButtons() {
-		this.recipeBookButton = new TexturedButtonWidget(this.x + 104, this.height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
+		this.bookButton = new TexturedButtonWidget(this.x + 104, this.height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
 			this.recipeBook.toggleOpen();
 			this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
 			this.mouseDown = true;
 
-			this.mapButton.active
-					=! this.mapButton.active;
+			this.mapButton.active =! this.mapButton.active;
 			this.updatePositionButtons();
 		});
 		this.mapButton = new TexturedButtonWidget(this.x + 126, this.height / 2 - 22, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
 			this.mapSlotsWidget.toggleOpen();
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
-			this.recipeBookButton.active
-					=! this.recipeBookButton.active;
+			this.bookButton.active =! this.bookButton.active;
 			this.updatePositionButtons();
 		});
 	}
@@ -63,18 +61,16 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 		this.clearChildren();
 		this.initButtons();
 
-		this.addDrawableChild(this.recipeBookButton);
+		this.addDrawableChild(this.bookButton);
 		this.addDrawableChild(this.mapButton);
 
 		if (this.recipeBook.isOpen())
-			this.mapButton.active
-					=! this.mapButton.active;
+			this.mapButton.active =! this.mapButton.active;
 
 		if (this.mapSlotsWidget.isOpen()) {
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
-			this.recipeBookButton.active
-					=! this.recipeBookButton.active;
+			this.bookButton.active =! this.bookButton.active;
 			this.updatePositionButtons();
 		}
 	}
@@ -86,8 +82,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	}
 
 	private void updatePositionButtons() {
-		this.recipeBookButton.setPos(this.x + 104, this.height / 2 - 22);
-		this.mapButton.setPos(this.x + (this.recipeBookButton.active ? 126 : 104), this.height / 2 - 22);
+		this.bookButton.setPos(this.x + 104, this.height / 2 - 22);
+		this.mapButton.setPos(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
 	}
 
 	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
