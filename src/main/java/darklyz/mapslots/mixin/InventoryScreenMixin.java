@@ -88,6 +88,6 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
 	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
 	public void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY, left, top) && cir.getReturnValue());
+		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY) && cir.getReturnValue());
 	}
 }
