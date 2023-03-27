@@ -4,6 +4,7 @@ import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.FilledMapItem;
@@ -89,9 +90,10 @@ public class Chunk extends DrawableHelper {
         }
 
         private void updateTexture() {
-            for (int i = 0; i < 128; ++i)
-                for (int j = 0; j < 128; ++j)
-                    Objects.requireNonNull(this.texture.getImage()).setColor(j, i, MapColor.getRenderColor(this.state.colors[j + i * 128]));
+            NativeImage image = Objects.requireNonNull(this.texture.getImage());
+            for (int y = 0; y < 128; y++)
+                for (int x = 0; x < 128; x++)
+                    image.setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
             this.texture.upload();
         }
 
