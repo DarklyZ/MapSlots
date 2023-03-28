@@ -26,6 +26,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
     public MapSlotsWidget() {
         this.chunks.put(6, Chunk.ofOffset(this, 0, 0));
+        this.chunks.put(8, Chunk.ofOffset(this, 1, 0));
     }
 
     public boolean isOpen() { return this.open; }
