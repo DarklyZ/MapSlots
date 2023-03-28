@@ -17,12 +17,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerScreenHandler.class)
-public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements MapSlotsHandler {
+abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements MapSlotsHandler {
     private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
 
-    public PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
+    private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
         super(screenHandlerType, i);
     }
+
+    public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
@@ -37,6 +39,4 @@ public abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandl
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
     }
-
-    public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
 }

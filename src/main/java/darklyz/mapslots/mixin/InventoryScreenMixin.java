@@ -1,6 +1,6 @@
 package darklyz.mapslots.mixin;
 
-import darklyz.mapslots.ExampleMod;
+import darklyz.mapslots.MapSlots;
 import darklyz.mapslots.drawables.MapSlotsWidget;
 import darklyz.mapslots.utils.MapSlotsHandler;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
@@ -21,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
+abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
 	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(
-			ExampleMod.LOGGER.getName(), "textures/gui/map_button.png");
+			MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
 	private final MapSlotsWidget mapSlotsWidget =
 			((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
 	private TexturedButtonWidget bookButton;
@@ -32,7 +32,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 	@Shadow @Final private RecipeBookWidget recipeBook;
 	@Shadow private boolean mouseDown;
 
-	public InventoryScreenMixin(PlayerScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
+	private InventoryScreenMixin(PlayerScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
 		super(screenHandler, playerInventory, text);
 	}
 
@@ -52,6 +52,11 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 			this.bookButton.active =! this.bookButton.active;
 			this.updatePositionButtons();
 		});
+	}
+
+	private void updatePositionButtons() {
+		this.bookButton.setPos(this.x + 104, this.height / 2 - 22);
+		this.mapButton.setPos(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
 	}
 
 	@Inject(at = @At(value = "TAIL"), method = "init")
@@ -81,13 +86,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 			this.mapSlotsWidget.render(matrices, mouseX, mouseY, delta);
 	}
 
-	private void updatePositionButtons() {
-		this.bookButton.setPos(this.x + 104, this.height / 2 - 22);
-		this.mapButton.setPos(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
-	}
-
 	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
-	public void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
+	private void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY) && cir.getReturnValue());
 	}
 }

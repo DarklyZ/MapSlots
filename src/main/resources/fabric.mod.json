@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "darklyz.mapslots.ExampleMod"
+      "darklyz.mapslots.MapSlots"
     ]
   },
   "mixins": [
