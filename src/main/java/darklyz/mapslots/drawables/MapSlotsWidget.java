@@ -18,14 +18,14 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
     private static final int side = 166;
     public final Inventory inventory = new SimpleInventory(3);
-    private final HashMap<Integer, Chunk> maps = new HashMap<>();
+    private final HashMap<Integer, Chunk> chunks = new HashMap<>();
     private final MinecraftClient client = MinecraftClient.getInstance();
     private boolean open = false;
     private int parentX;
     private int parentY;
 
     public MapSlotsWidget() {
-        this.maps.put(6, Chunk.ofOffset(this, 0, 0));
+        this.chunks.put(6, Chunk.ofOffset(this, 0, 0));
     }
 
     public boolean isOpen() { return this.open; }
@@ -60,8 +60,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
         drawTexture(matrices, this.getOutX(), this.getOutY(), side, side, 0, 0, 64, 64, 64, 64);
 
-        for (Integer key : this.maps.keySet())
-            this.maps.get(key).drawMap(matrices, this.client, key);
+        for (Integer key : this.chunks.keySet())
+            this.chunks.get(key).drawMap(matrices, this.client, key);
 
         if (this.isChangeMode() && this.isMouseInsideBounds(mouseX, mouseY))
             this.getChunk(mouseX, mouseY).drawSelection(matrices);
