@@ -72,12 +72,14 @@ public class Chunk extends DrawableHelper {
     public void drawMap(MatrixStack matrices, MinecraftClient client, Integer mapId) {
         matrices.push();
 
-        new MapTexture(client, mapId).draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2());
+        try (MapTexture mapTexture = new MapTexture(client, mapId)) {
+            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2());
+        }
 
         matrices.pop();
     }
 
-    private static class MapTexture {
+    private static class MapTexture implements AutoCloseable {
         private final MapState state;
         private final NativeImageBackedTexture texture;
         private final RenderLayer renderLayer;
@@ -112,5 +114,7 @@ public class Chunk extends DrawableHelper {
 
             immediate.draw();
         }
+
+        public void close() { this.texture.close(); }
     }
 }
