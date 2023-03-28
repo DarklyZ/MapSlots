@@ -30,7 +30,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
     public boolean isOpen() { return this.open; }
     public void setOpen(boolean opened) { this.open = opened; }
-    public void toggleOpen() { this.setOpen(!isOpen()); }
+    public void toggleOpen() { this.setOpen(!this.isOpen()); }
 
     public boolean isChangeMode() {
         return !this.inventory.getStack(0).isEmpty();
@@ -46,7 +46,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     }
     
     public int getMoveX(int parentX) {
-        this.parentX = parentX + (isOpen() ? side / 2 : -side / 2);
+        this.parentX = parentX + (this.isOpen() ? side / 2 : -side / 2);
         return this.parentX;
     }
 
@@ -70,7 +70,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     }
 
     public boolean isClickOutsideBounds(double mouseX, double mouseY) {
-        return !isOpen() || mouseX < this.getOutX()-18 || mouseY < this.getOutY() || mouseX > this.getOutX() + side || mouseY > this.getOutY() + side;
+        return !this.isOpen() || mouseX < this.getOutX()-18 || mouseY < this.getOutY() || mouseX > this.getOutX() + side || mouseY > this.getOutY() + side;
     }
 
     public boolean isMouseInsideBounds(double mouseX, double mouseY) {
