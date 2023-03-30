@@ -44,27 +44,42 @@ public class Chunk extends DrawableHelper {
         return (mouse - center) / side - (mouse < center ? 1 : 0);
     }
 
+    private int getTrueX() {
+        return getPoint(this.region.getInX(), this.region.getInSide(), this.region.getOffX(),  this.offX);
+    }
+    private int getTrueY() {
+        return getPoint(this.region.getInY(), this.region.getInSide(), this.region.getOffY(), this.offY);
+    }
+
     private int getX1() {
-        int x = getPoint(this.region.getInX(), this.region.getInSide(), this.region.getOffX(),  this.offX);
+        int x = this.getTrueX();
         return this.region.getInX() < x ? Math.min(x, this.region.getInX() + this.region.getInSide()) : this.region.getInX();
     }
     private int getY1() {
-        int y = getPoint(this.region.getInY(), this.region.getInSide(), this.region.getOffY(), this.offY);
+        int y = this.getTrueY();
         return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
     }
     private int getX2() {
-        int x = getPoint(this.region.getInX(), this.region.getInSide(), this.region.getOffX(), this.offX) + side;
+        int x = this.getTrueX() + side;
         return this.region.getInX() < x ? Math.min(x, this.region.getInX() + this.region.getInSide()) : this.region.getInX();
     }
     private int getY2() {
-        int y = getPoint(this.region.getInY(), this.region.getInSide(), this.region.getOffY(), this.offY) + side;
+        int y = this.getTrueY() + side;
         return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
     }
 
     public void drawSelection(MatrixStack matrices) {
         matrices.push();
 
-        fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
+        int offLeft = Math.min(Math.max(this.getTrueX() - this.region.getInX(), 0), 2);
+        int offTop = Math.min(Math.max(this.getTrueY() - this.region.getInY(), 0), 2);
+        int offRight = Math.min(Math.max(this.region.getInX() + this.region.getInSide() - (this.getTrueX() + side), 0), 2);
+        int offBottom = Math.min(Math.max(this.region.getInY() + this.region.getInSide() - (this.getTrueY() + side), 0), 2);
+
+        fill(matrices, this.getX1(), this.getY1(), this.getX1() + offLeft, this.getY2(), Color.GREEN.getRGB());
+        fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY1() + offTop, Color.GREEN.getRGB());
+        fill(matrices, this.getX2() - offRight, this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
+        fill(matrices, this.getX1(), this.getY2() - offBottom, this.getX2(), this.getY2(), Color.GREEN.getRGB());
 
         matrices.pop();
     }
