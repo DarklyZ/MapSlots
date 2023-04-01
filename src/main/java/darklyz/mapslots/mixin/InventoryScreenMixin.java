@@ -55,8 +55,8 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 	}
 
 	private void updatePositionButtons() {
-		this.bookButton.setPos(this.x + 104, this.height / 2 - 22);
-		this.mapButton.setPos(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
+		this.bookButton.setPosition(this.x + 104, this.height / 2 - 22);
+		this.mapButton.setPosition(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
 	}
 
 	@Inject(at = @At(value = "TAIL"), method = "init")

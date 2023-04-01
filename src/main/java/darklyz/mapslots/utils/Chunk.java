@@ -107,10 +107,10 @@ public class Chunk extends DrawableHelper {
         }
 
         private void updateTexture() {
-            NativeImage image = Objects.requireNonNull(this.texture.getImage());
-            for (int y = 0; y < 128; y++)
-                for (int x = 0; x < 128; x++)
-                    image.setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
+            if (this.texture.getImage() != null && this.state != null)
+                for (int y = 0; y < 128; y++)
+                    for (int x = 0; x < 128; x++)
+                        this.texture.getImage().setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
             this.texture.upload();
         }
 
