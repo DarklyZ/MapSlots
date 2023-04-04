@@ -37,9 +37,6 @@ public class Chunk extends DrawableHelper {
         this.offY = offY;
     }
 
-//    public boolean equals(Object obj) {
-//        return obj instanceof Chunk chunk && ((this.mapId != null) ? this.mapId.equals(chunk.mapId) : this.offX == chunk.offX && this.offY == chunk.offY);
-//    }
     public boolean equals(Object obj) {
         return obj instanceof Chunk chunk && (Objects.equals(this.mapId, chunk.mapId) || (this.offX == chunk.offX && this.offY == chunk.offY));
     }
@@ -49,7 +46,6 @@ public class Chunk extends DrawableHelper {
         buf.writeInt(this.offX);
         buf.writeInt(this.offY);
     }
-
     public static Chunk readBuf(Region region, PacketByteBuf buf) {
         int mapId = buf.readInt();
         return new Chunk(region, mapId != -1 ? mapId : null, buf.readInt(), buf.readInt());
