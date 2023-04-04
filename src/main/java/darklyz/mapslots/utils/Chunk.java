@@ -22,9 +22,6 @@ public class Chunk extends DrawableHelper {
     private final int offX, offY;
     public final Integer mapId;
 
-    public Chunk(Region region, double mouseX, double mouseY) {
-        this(region, (int)mouseX, (int)mouseY);
-    }
     public Chunk(Region region, int mouseX, int mouseY) {
         this(region, region.getMapId(),
                 getOffset(region.getInX(), region.getInSide(), region.getOffX(), mouseX),

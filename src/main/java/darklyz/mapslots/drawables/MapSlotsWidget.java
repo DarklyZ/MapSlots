@@ -77,7 +77,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isMouseInsideBounds(mouseX, mouseY))
-            ChunksPacket.sendC2S(new Chunk(this, mouseX, mouseY), button);
+            ChunksPacket.sendC2S(this.getChunk((int)mouseX, (int)mouseY), button);
         return true;
     }
 
