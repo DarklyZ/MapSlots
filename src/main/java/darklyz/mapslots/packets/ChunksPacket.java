@@ -45,7 +45,7 @@ public class ChunksPacket {
                                  ServerPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
                                  PacketSender ignoredSender) {
-        MapSlotsWidget mSWidget = ((MapSlotsHandler) player.playerScreenHandler).getMSWidget();
+        MapSlotsWidget mSWidget = ((MapSlotsHandler)player.playerScreenHandler).getMSWidget();
         Chunk chunk = Chunk.readBuf(mSWidget, buf);
         int button = buf.readInt();
         int index = mSWidget.chunks.indexOf(chunk);
