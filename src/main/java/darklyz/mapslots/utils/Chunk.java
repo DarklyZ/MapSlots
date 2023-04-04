@@ -14,6 +14,7 @@ import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Chunk extends DrawableHelper {
     private static final int side = 30;
@@ -42,13 +43,12 @@ public class Chunk extends DrawableHelper {
     }
 
     public void writeBuf(PacketByteBuf buf) {
-        buf.writeInt(this.mapId != null ? this.mapId : -1);
+        buf.writeOptional(Optional.ofNullable(this.mapId), PacketByteBuf::writeInt);
         buf.writeInt(this.offX);
         buf.writeInt(this.offY);
     }
     public static Chunk readBuf(Region region, PacketByteBuf buf) {
-        int mapId = buf.readInt();
-        return new Chunk(region, mapId != -1 ? mapId : null, buf.readInt(), buf.readInt());
+        return new Chunk(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
     }
 
     private static int getCenter(int lim, int limSide, int off) { return lim + limSide/2 + off; }

@@ -69,8 +69,10 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		this.addDrawableChild(this.bookButton);
 		this.addDrawableChild(this.mapButton);
 
-		if (this.recipeBook.isOpen())
+		if (this.recipeBook.isOpen()) {
 			this.mapButton.active =! this.mapButton.active;
+			this.mapSlotsWidget.setOpen(false);
+		}
 
 		if (this.mapSlotsWidget.isOpen()) {
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
