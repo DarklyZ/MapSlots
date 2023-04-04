@@ -1,6 +1,7 @@
 package darklyz.mapslots.utils;
 
 public interface Region {
+    Integer getMapId();
     int getInX();
     int getInY();
     int getInSide();

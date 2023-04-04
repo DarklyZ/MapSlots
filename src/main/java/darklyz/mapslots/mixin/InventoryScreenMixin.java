@@ -9,6 +9,9 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.PacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -88,6 +91,11 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
 	private void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY) && cir.getReturnValue());
+		cir.setReturnValue(cir.getReturnValue() && this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY));
+	}
+
+	@Inject(at = @At("TAIL"), method = "mouseClicked", cancellable = true)
+	private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(cir.getReturnValue() && this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button));
 	}
 }

@@ -30,12 +30,11 @@ abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<Craf
     private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
         this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.getOutSide() - 20, 2) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
-            public boolean canInsert(ItemStack stack) { return stack.isOf(Items.FILLED_MAP); }
+            public boolean canInsert(ItemStack stack) {
+                return stack.isOf(Items.FILLED_MAP) && stack.getCount() == 1;
+            }
         });
         this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.getOutSide() - 20, 20) {
-            public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
-        });
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 2, -mapSlotsWidget.getOutSide() - 20, 38) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
     }

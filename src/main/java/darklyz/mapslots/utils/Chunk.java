@@ -4,11 +4,11 @@ import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
 
@@ -17,22 +17,42 @@ import java.util.Objects;
 
 public class Chunk extends DrawableHelper {
     private static final int side = 30;
-    private final int offX, offY;
     private final Region region;
+    private final int offX, offY;
+    public final Integer mapId;
 
-    private Chunk(Region region, int offX, int offY) {
+    public Chunk(Region region, double mouseX, double mouseY) {
+        this(region, (int)mouseX, (int)mouseY);
+    }
+    public Chunk(Region region, int mouseX, int mouseY) {
+        this(region, region.getMapId(),
+                getOffset(region.getInX(), region.getInSide(), region.getOffX(), mouseX),
+                getOffset(region.getInY(), region.getInSide(), region.getOffY(), mouseY)
+        );
+    }
+    public Chunk(Region region, Integer mapId, int offX, int offY) {
+        this.region = region;
+        this.mapId = mapId;
         this.offX = offX;
         this.offY = offY;
-        this.region = region;
     }
 
-    public static Chunk ofOffset(Region region, int offX, int offY) {
-        return new Chunk(region, offX, offY);
+//    public boolean equals(Object obj) {
+//        return obj instanceof Chunk chunk && ((this.mapId != null) ? this.mapId.equals(chunk.mapId) : this.offX == chunk.offX && this.offY == chunk.offY);
+//    }
+    public boolean equals(Object obj) {
+        return obj instanceof Chunk chunk && (Objects.equals(this.mapId, chunk.mapId) || (this.offX == chunk.offX && this.offY == chunk.offY));
     }
-    public static Chunk ofMouse(Region region, int mouseX, int mouseY) {
-        int offX = getOffset(region.getInX(), region.getInSide(), region.getOffX(), mouseX);
-        int offY = getOffset(region.getInY(), region.getInSide(), region.getOffY(), mouseY);
-        return new Chunk(region, offX, offY);
+
+    public void writeBuf(PacketByteBuf buf) {
+        buf.writeInt(this.mapId != null ? this.mapId : -1);
+        buf.writeInt(this.offX);
+        buf.writeInt(this.offY);
+    }
+
+    public static Chunk readBuf(Region region, PacketByteBuf buf) {
+        int mapId = buf.readInt();
+        return new Chunk(region, mapId != -1 ? mapId : null, buf.readInt(), buf.readInt());
     }
 
     private static int getCenter(int lim, int limSide, int off) { return lim + limSide/2 + off; }
@@ -84,10 +104,10 @@ public class Chunk extends DrawableHelper {
         matrices.pop();
     }
 
-    public void drawMap(MatrixStack matrices, MinecraftClient client, Integer mapId) {
+    public void drawMap(MatrixStack matrices, MinecraftClient client) {
         matrices.push();
 
-        try (MapTexture mapTexture = new MapTexture(client, mapId)) {
+        try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
             mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2());
         }
 
@@ -108,9 +128,8 @@ public class Chunk extends DrawableHelper {
 
         private void updateTexture() {
             if (this.texture.getImage() != null && this.state != null)
-                for (int y = 0; y < 128; y++)
-                    for (int x = 0; x < 128; x++)
-                        this.texture.getImage().setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
+                for (int y = 0; y < 128; y++) for (int x = 0; x < 128; x++)
+                    this.texture.getImage().setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
             this.texture.upload();
         }
 

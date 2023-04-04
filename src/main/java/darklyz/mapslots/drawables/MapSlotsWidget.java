@@ -1,45 +1,49 @@
 package darklyz.mapslots.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import darklyz.mapslots.MapSlots;
+import darklyz.mapslots.packets.ChunksPacket;
 import darklyz.mapslots.utils.Chunk;
 import darklyz.mapslots.utils.Region;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
     private static final int side = 166;
-    public final Inventory inventory = new SimpleInventory(3);
-    private final HashMap<Integer, Chunk> chunks = new HashMap<>();
+    public final ArrayList<Chunk> chunks = new ArrayList<>();
     private final MinecraftClient client = MinecraftClient.getInstance();
+    public final Inventory inventory = new SimpleInventory(2);
     private boolean open = false;
     private int parentX;
     private int parentY;
-
-    public MapSlotsWidget() {
-        this.chunks.put(6, Chunk.ofOffset(this, 0, 0));
-        this.chunks.put(8, Chunk.ofOffset(this, 1, 0));
-        this.chunks.put(9, Chunk.ofOffset(this, 2, 0));
-    }
 
     public boolean isOpen() { return this.open; }
     public void setOpen(boolean opened) { this.open = opened; }
     public void toggleOpen() { this.setOpen(!this.isOpen()); }
 
-    public boolean isChangeMode() {
-        return !this.inventory.getStack(0).isEmpty();
+    public boolean isInsertMode() {
+        return this.inventory.getStack(0).isOf(Items.FILLED_MAP);
+    }
+    public boolean isRemoveMode() {
+        return this.inventory.getStack(0).isEmpty();
     }
 
     public Chunk getChunk(int mouseX, int mouseY) {
-        return Chunk.ofMouse(this, mouseX, mouseY);
+        return new Chunk(this, mouseX, mouseY);
     }
 
     public void initialize(int parentX, int parentY) {
@@ -62,10 +66,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
         drawTexture(matrices, this.getOutX(), this.getOutY(), side, side, 0, 0, 64, 64, 64, 64);
 
-        for (Integer key : this.chunks.keySet())
-            this.chunks.get(key).drawMap(matrices, this.client, key);
+        for (Chunk chunk : this.chunks)
+            chunk.drawMap(matrices, this.client);
 
-        if (this.isChangeMode() && this.isMouseInsideBounds(mouseX, mouseY))
+        if (this.isInsertMode() && this.isMouseInsideBounds(mouseX, mouseY))
             this.getChunk(mouseX, mouseY).drawSelection(matrices);
 
         matrices.pop();
@@ -75,10 +79,19 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
         return !this.isOpen() || mouseX < this.getOutX()-18 || mouseY < this.getOutY() || mouseX > this.getOutX() + side || mouseY > this.getOutY() + side;
     }
 
-    public boolean isMouseInsideBounds(double mouseX, double mouseY) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.isMouseInsideBounds(mouseX, mouseY))
+            ChunksPacket.sendC2S(new Chunk(this, mouseX, mouseY), button);
+        return true;
+    }
+
+    private boolean isMouseInsideBounds(double mouseX, double mouseY) {
         return mouseX >= this.getInX() && mouseY >= this.getInY() && mouseX <= this.getInX() + this.getInSide() && mouseY <= this.getInY() + this.getInSide();
     }
 
+    public Integer getMapId() {
+        return FilledMapItem.getMapId(this.inventory.getStack(0));
+    }
     public int getInX() { return this.getOutX() + 5; }
     public int getInY() { return this.getOutY() + 5; }
     public int getInSide() { return this.getOutSide() - 10; }
