@@ -1,7 +1,6 @@
 package darklyz.mapslots.drawables;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import darklyz.mapslots.MapSlots;
 import darklyz.mapslots.packets.ChunksPacket;
 import darklyz.mapslots.utils.Chunk;
 import darklyz.mapslots.utils.Region;
@@ -9,14 +8,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
