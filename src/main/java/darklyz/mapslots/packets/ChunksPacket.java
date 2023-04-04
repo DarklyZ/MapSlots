@@ -42,9 +42,9 @@ public class ChunksPacket {
 
     public static void handleC2S(MinecraftServer server,
                                  ServerPlayerEntity player,
-                                 ServerPlayNetworkHandler network,
+                                 ServerPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
-                                 PacketSender sender) {
+                                 PacketSender ignoredSender) {
         MapSlotsWidget mSWidget = ((MapSlotsHandler) player.playerScreenHandler).getMSWidget();
         Chunk chunk = Chunk.readBuf(mSWidget, buf);
         int button = buf.readInt();
@@ -72,9 +72,9 @@ public class ChunksPacket {
     }
 
     public static void handleS2C(MinecraftClient client,
-                                 ClientPlayNetworkHandler network,
+                                 ClientPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
-                                 PacketSender sender) {
+                                 PacketSender ignoredSender) {
         if (client.player == null)
             return;
 
