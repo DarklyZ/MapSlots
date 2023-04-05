@@ -52,10 +52,10 @@ public class ChunksPacket {
                 sendS2C(player, chunk);
             } else if (mSWidget.isRemoveMode() && index >= 0 && InputUtil.fromTranslationKey("key.mouse.right").getCode() == button) {
                 ItemStack stack = new ItemStack(Items.FILLED_MAP);
-                NbtCompound nbtCompound = new NbtCompound();
+                NbtCompound nbt = new NbtCompound();
 
-                nbtCompound.putInt("map", mSWidget.chunks.get(index).mapId);
-                stack.setNbt(nbtCompound);
+                nbt.putInt("map", mSWidget.chunks.get(index).mapId);
+                stack.setNbt(nbt);
 
                 mSWidget.chunks.remove(index);
                 mSWidget.inventory.setStack(0, stack);
