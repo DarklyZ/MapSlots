@@ -1,5 +1,6 @@
 package darklyz.mapslots.utils;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -22,6 +23,9 @@ public class Chunk extends DrawableHelper {
     private final int offX, offY;
     public final Integer mapId;
 
+    public Chunk(Region region, PacketByteBuf buf) {
+        this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
+    }
     public Chunk(Region region, int mouseX, int mouseY) {
         this(region, region.getMapId(),
                 getOffset(region.getInX(), region.getInSide(), region.getOffX(), mouseX),
@@ -39,21 +43,22 @@ public class Chunk extends DrawableHelper {
         return obj instanceof Chunk chunk && (Objects.equals(this.mapId, chunk.mapId) || (this.offX == chunk.offX && this.offY == chunk.offY));
     }
 
-    public void writeBuf(PacketByteBuf buf) {
+    public PacketByteBuf toBuffer() {
+        PacketByteBuf buf = PacketByteBufs.create();
+
         buf.writeOptional(Optional.ofNullable(this.mapId), PacketByteBuf::writeInt);
         buf.writeInt(this.offX);
         buf.writeInt(this.offY);
-    }
-    public static Chunk readBuf(Region region, PacketByteBuf buf) {
-        return new Chunk(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
+
+        return buf;
     }
 
-    private static int getCenter(int lim, int limSide, int off) { return lim + limSide/2 + off; }
-    private static int getPoint(int lim, int limSide, int gOff, int off) {
-        return getCenter(lim, limSide, gOff) + off * side;
+    private static int getCenter(int lim, int limSide, int cOff) { return lim + limSide/2 + cOff; }
+    private static int getPoint(int lim, int limSide, int cOff, int off) {
+        return getCenter(lim, limSide, cOff) + off * side;
     }
-    private static int getOffset(int lim, int limSide, int gOff, int mouse) {
-        int center = getCenter(lim, limSide, gOff);
+    private static int getOffset(int lim, int limSide, int cOff, int mouse) {
+        int center = getCenter(lim, limSide, cOff);
         return (mouse - center) / side - (mouse < center ? 1 : 0);
     }
 

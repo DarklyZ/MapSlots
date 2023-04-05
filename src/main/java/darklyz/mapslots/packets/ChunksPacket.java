@@ -5,7 +5,6 @@ import darklyz.mapslots.drawables.MapSlotsWidget;
 import darklyz.mapslots.utils.Chunk;
 import darklyz.mapslots.utils.MapSlotsHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -24,19 +23,13 @@ public class ChunksPacket {
     public static final Identifier ID = new Identifier(MapSlots.LOGGER.getName(), "chunks");
 
     public static void sendC2S(Chunk chunk, int button) {
-        PacketByteBuf buf = PacketByteBufs.create();
-
-        chunk.writeBuf(buf);
+        PacketByteBuf buf = chunk.toBuffer();
         buf.writeInt(button);
-
         ClientPlayNetworking.send(ID, buf);
     }
 
     public static void sendS2C(ServerPlayerEntity player, Chunk chunk) {
-        PacketByteBuf buf = PacketByteBufs.create();
-
-        chunk.writeBuf(buf);
-
+        PacketByteBuf buf = chunk.toBuffer();
         ServerPlayNetworking.send(player, ID, buf);
     }
 
@@ -46,12 +39,13 @@ public class ChunksPacket {
                                  PacketByteBuf buf,
                                  PacketSender ignoredSender) {
         MapSlotsWidget mSWidget = ((MapSlotsHandler)player.playerScreenHandler).getMSWidget();
-        Chunk chunk = Chunk.readBuf(mSWidget, buf);
+        Chunk chunk = new Chunk(mSWidget, buf);
         int button = buf.readInt();
-        int index = mSWidget.chunks.indexOf(chunk);
 
         server.execute(() -> {
-            if (mSWidget.isInsertMode() && !mSWidget.chunks.contains(chunk) && InputUtil.fromTranslationKey("key.mouse.left").getCode() == button) {
+            int index = mSWidget.chunks.indexOf(chunk);
+
+            if (mSWidget.isInsertMode() && index < 0 && InputUtil.fromTranslationKey("key.mouse.left").getCode() == button) {
                 mSWidget.inventory.removeStack(0);
                 mSWidget.chunks.add(chunk);
 
@@ -79,7 +73,7 @@ public class ChunksPacket {
             return;
 
         MapSlotsWidget mSWidget = ((MapSlotsHandler)client.player.playerScreenHandler).getMSWidget();
-        Chunk chunk = Chunk.readBuf(mSWidget, buf);
+        Chunk chunk = new Chunk(mSWidget, buf);
 
         client.execute(() -> {
             if (chunk.mapId == null)
