@@ -106,7 +106,7 @@ public class Chunk extends DrawableHelper {
         matrices.push();
 
         try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
-            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2());
+            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY());
         }
 
         matrices.pop();
@@ -131,18 +131,23 @@ public class Chunk extends DrawableHelper {
             this.texture.upload();
         }
 
-        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2) {
+        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY) {
             this.updateTexture();
+
+            float u1 = (float)(x1 - trueX) / side;
+            float v1 = (float)(y1 - trueY) / side;
+            float u2 = (float)(x2 - trueX) / side;
+            float v2 = (float)(y2 - trueY) / side;
 
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
             VertexConsumerProvider.Immediate immediate =
                     VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
             VertexConsumer vertexConsumer = immediate.getBuffer(this.renderLayer);
 
-            vertexConsumer.vertex(matrix4f, x1, y2, 0.0f).color(255, 255, 255, 255).texture(0.0f, 1.0f).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x2, y2, 0.0f).color(255, 255, 255, 255).texture(1.0f, 1.0f).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x2, y1, 0.0f).color(255, 255, 255, 255).texture(1.0f, 0.0f).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x1, y1, 0.0f).color(255, 255, 255, 255).texture(0.0f, 0.0f).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x1, y2, 0.0f).color(255, 255, 255, 255).texture(u1, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x2, y2, 0.0f).color(255, 255, 255, 255).texture(u2, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x2, y1, 0.0f).color(255, 255, 255, 255).texture(u2, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x1, y1, 0.0f).color(255, 255, 255, 255).texture(u1, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
 
             immediate.draw();
         }
