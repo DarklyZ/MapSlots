@@ -26,8 +26,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 			MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
 	private final MapSlotsWidget mapSlotsWidget =
 			((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
-	private TexturedButtonWidget bookButton;
-	private TexturedButtonWidget mapButton;
+	private TexturedButtonWidget bookButton, mapButton;
 	@Shadow @Final private static Identifier RECIPE_BUTTON_TEXTURE;
 	@Shadow @Final private RecipeBookWidget recipeBook;
 	@Shadow private boolean mouseDown;

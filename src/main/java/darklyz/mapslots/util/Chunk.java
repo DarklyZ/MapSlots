@@ -20,8 +20,8 @@ import java.util.Optional;
 public class Chunk extends DrawableHelper {
     private static final int side = 30;
     private final Region region;
-    private final int offX, offY;
     public final Integer mapId;
+    private final int offX, offY;
 
     public Chunk(Region region, PacketByteBuf buf) {
         this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
