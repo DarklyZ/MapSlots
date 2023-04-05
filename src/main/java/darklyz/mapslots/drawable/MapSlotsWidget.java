@@ -24,8 +24,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     private final MinecraftClient client = MinecraftClient.getInstance();
     public final Inventory inventory = new SimpleInventory(2);
     private boolean open = false;
-    private int parentX;
-    private int parentY;
+    private int parentX, parentY;
 
     public boolean isOpen() { return this.open; }
     public void setOpen(boolean opened) { this.open = opened; }
