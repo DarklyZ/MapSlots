@@ -8,6 +8,6 @@ public interface Region {
     int getOutX();
     int getOutY();
     int getOutSide();
-    int getOffX();
-    int getOffY();
+    int getCenterX();
+    int getCenterY();
 }

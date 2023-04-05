@@ -89,6 +89,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
     public int getOutX() { return this.parentX-2 - side; }
     public int getOutY() { return this.parentY; }
     public int getOutSide() { return side; }
-    public int getOffX() { return 0; }
-    public int getOffY() { return 0; }
+    public int getCenterX() {
+        return this.getInX() + this.getInSide()/2;
+    }
+    public int getCenterY() {
+        return this.getInY() + this.getInSide()/2;
+    }
 }

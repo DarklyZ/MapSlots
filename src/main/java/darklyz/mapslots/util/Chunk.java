@@ -22,20 +22,21 @@ public class Chunk extends DrawableHelper {
     public final Integer mapId;
     private final int offX, offY;
 
-    public Chunk(Region region, PacketByteBuf buf) {
-        this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
-    }
-    public Chunk(Region region, int mouseX, int mouseY) {
-        this(region, region.getMapId(),
-                getOffset(region.getInX(), region.getInSide(), region.getOffX(), mouseX),
-                getOffset(region.getInY(), region.getInSide(), region.getOffY(), mouseY)
-        );
-    }
     public Chunk(Region region, Integer mapId, int offX, int offY) {
         this.region = region;
         this.mapId = mapId;
         this.offX = offX;
         this.offY = offY;
+    }
+    public Chunk(Region region, PacketByteBuf buf) {
+        this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
+    }
+    public Chunk(Region region, int mouseX, int mouseY) {
+        this(region, region.getMapId(), getOffset(region.getCenterX(), mouseX), getOffset(region.getCenterY(), mouseY));
+    }
+
+    private static int getOffset(int center, int mouse) {
+        return (mouse - center) / side - (mouse < center ? 1 : 0);
     }
 
     public boolean equals(Object obj) {
@@ -52,20 +53,11 @@ public class Chunk extends DrawableHelper {
         return buf;
     }
 
-    private static int getCenter(int lim, int limSide, int cOff) { return lim + limSide/2 + cOff; }
-    private static int getPoint(int lim, int limSide, int cOff, int off) {
-        return getCenter(lim, limSide, cOff) + off * side;
-    }
-    private static int getOffset(int lim, int limSide, int cOff, int mouse) {
-        int center = getCenter(lim, limSide, cOff);
-        return (mouse - center) / side - (mouse < center ? 1 : 0);
-    }
-
     private int getTrueX() {
-        return getPoint(this.region.getInX(), this.region.getInSide(), this.region.getOffX(),  this.offX);
+        return this.region.getCenterX() + this.offX * side;
     }
     private int getTrueY() {
-        return getPoint(this.region.getInY(), this.region.getInSide(), this.region.getOffY(), this.offY);
+        return this.region.getCenterY() + this.offY * side;
     }
 
     private int getX1() {
