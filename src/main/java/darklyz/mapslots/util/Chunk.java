@@ -1,4 +1,4 @@
-package darklyz.mapslots.utils;
+package darklyz.mapslots.util;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;

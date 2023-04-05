@@ -1,8 +1,8 @@
 package darklyz.mapslots.mixin;
 
 import darklyz.mapslots.MapSlots;
-import darklyz.mapslots.drawables.MapSlotsWidget;
-import darklyz.mapslots.utils.MapSlotsHandler;
+import darklyz.mapslots.drawable.MapSlotsWidget;
+import darklyz.mapslots.util.MapSlotsHandler;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;

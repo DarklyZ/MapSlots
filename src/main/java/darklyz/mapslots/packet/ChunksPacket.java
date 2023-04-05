@@ -1,9 +1,9 @@
-package darklyz.mapslots.packets;
+package darklyz.mapslots.packet;
 
 import darklyz.mapslots.MapSlots;
-import darklyz.mapslots.drawables.MapSlotsWidget;
-import darklyz.mapslots.utils.Chunk;
-import darklyz.mapslots.utils.MapSlotsHandler;
+import darklyz.mapslots.drawable.MapSlotsWidget;
+import darklyz.mapslots.util.Chunk;
+import darklyz.mapslots.util.MapSlotsHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

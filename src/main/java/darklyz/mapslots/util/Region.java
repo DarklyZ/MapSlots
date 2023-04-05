@@ -1,4 +1,4 @@
-package darklyz.mapslots.utils;
+package darklyz.mapslots.util;
 
 public interface Region {
     Integer getMapId();
