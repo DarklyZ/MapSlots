@@ -13,7 +13,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
 
-import java.awt.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -86,27 +85,11 @@ public class Chunk extends DrawableHelper {
         return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
     }
 
-    public void drawSelection(MatrixStack matrices) {
-        matrices.push();
-
-        int offLeft = Math.min(Math.max(this.getTrueX() - this.region.getInX(), 0), 2);
-        int offTop = Math.min(Math.max(this.getTrueY() - this.region.getInY(), 0), 2);
-        int offRight = Math.min(Math.max(this.region.getInX() + this.region.getInSide() - (this.getTrueX() + side), 0), 2);
-        int offBottom = Math.min(Math.max(this.region.getInY() + this.region.getInSide() - (this.getTrueY() + side), 0), 2);
-
-        fill(matrices, this.getX1(), this.getY1(), this.getX1() + offLeft, this.getY2(), Color.GREEN.getRGB());
-        fill(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY1() + offTop, Color.GREEN.getRGB());
-        fill(matrices, this.getX2() - offRight, this.getY1(), this.getX2(), this.getY2(), Color.GREEN.getRGB());
-        fill(matrices, this.getX1(), this.getY2() - offBottom, this.getX2(), this.getY2(), Color.GREEN.getRGB());
-
-        matrices.pop();
-    }
-
-    public void drawMap(MatrixStack matrices, MinecraftClient client) {
+    public void drawMap(MatrixStack matrices, MinecraftClient client, int alpha) {
         matrices.push();
 
         try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
-            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY());
+            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), alpha);
         }
 
         matrices.pop();
@@ -131,7 +114,7 @@ public class Chunk extends DrawableHelper {
             this.texture.upload();
         }
 
-        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY) {
+        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY, int alpha) {
             this.updateTexture();
 
             float u1 = (float)(x1 - trueX) / side;
@@ -144,10 +127,10 @@ public class Chunk extends DrawableHelper {
                     VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
             VertexConsumer vertexConsumer = immediate.getBuffer(this.renderLayer);
 
-            vertexConsumer.vertex(matrix4f, x1, y2, 0.0f).color(255, 255, 255, 255).texture(u1, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x2, y2, 0.0f).color(255, 255, 255, 255).texture(u2, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x2, y1, 0.0f).color(255, 255, 255, 255).texture(u2, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
-            vertexConsumer.vertex(matrix4f, x1, y1, 0.0f).color(255, 255, 255, 255).texture(u1, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x1, y2, 0.0f).color(255, 255, 255, alpha).texture(u1, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x2, y2, 0.0f).color(255, 255, 255, alpha).texture(u2, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x2, y1, 0.0f).color(255, 255, 255, alpha).texture(u2, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
+            vertexConsumer.vertex(matrix4f, x1, y1, 0.0f).color(255, 255, 255, alpha).texture(u1, v1).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
 
             immediate.draw();
         }

@@ -37,10 +37,6 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
         return this.inventory.getStack(0).isEmpty();
     }
 
-    public Chunk getChunk(int mouseX, int mouseY) {
-        return new Chunk(this, mouseX, mouseY);
-    }
-
     public void initialize(int parentX, int parentY) {
         this.parentX = parentX;
         this.parentY = parentY;
@@ -62,10 +58,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
         drawTexture(matrices, this.getOutX(), this.getOutY(), side, side, 0, 0, 64, 64, 64, 64);
 
         for (Chunk chunk : this.chunks)
-            chunk.drawMap(matrices, this.client);
+            chunk.drawMap(matrices, this.client, 255);
 
         if (this.isInsertMode() && this.isMouseInsideBounds(mouseX, mouseY))
-            this.getChunk(mouseX, mouseY).drawSelection(matrices);
+            new Chunk(this, mouseX, mouseY).drawMap(matrices, this.client, 120);
 
         matrices.pop();
     }
@@ -76,7 +72,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Region {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.isMouseInsideBounds(mouseX, mouseY))
-            ChunksPacket.sendC2S(this.getChunk((int)mouseX, (int)mouseY), button);
+            ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
         return true;
     }
 
