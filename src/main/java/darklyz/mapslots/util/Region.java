@@ -10,4 +10,5 @@ public interface Region {
     int getOutSide();
     int getCenterX();
     int getCenterY();
+    int getChunkSide();
 }

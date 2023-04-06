@@ -48,8 +48,6 @@ public class ChunksPacket {
             if (mSWidget.isInsertMode() && index < 0 && InputUtil.fromTranslationKey("key.mouse.left").getCode() == button) {
                 mSWidget.inventory.removeStack(0);
                 mSWidget.chunks.add(chunk);
-
-                sendS2C(player, chunk);
             } else if (mSWidget.isRemoveMode() && index >= 0 && InputUtil.fromTranslationKey("key.mouse.right").getCode() == button) {
                 ItemStack stack = new ItemStack(Items.FILLED_MAP);
                 NbtCompound nbt = new NbtCompound();
@@ -59,9 +57,9 @@ public class ChunksPacket {
 
                 mSWidget.chunks.remove(index);
                 mSWidget.inventory.setStack(0, stack);
+            } else return;
 
-                sendS2C(player, chunk);
-            }
+            sendS2C(player, chunk);
         });
     }
 

@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Chunk extends DrawableHelper {
-    private static final int side = 30;
     private final Region region;
     public final Integer mapId;
     private final int offX, offY;
@@ -32,10 +31,9 @@ public class Chunk extends DrawableHelper {
         this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
     }
     public Chunk(Region region, int mouseX, int mouseY) {
-        this(region, region.getMapId(), getOffset(region.getCenterX(), mouseX), getOffset(region.getCenterY(), mouseY));
+        this(region, region.getMapId(), getOffset(region.getCenterX(), region.getChunkSide(), mouseX), getOffset(region.getCenterY(), region.getChunkSide(), mouseY));
     }
-
-    private static int getOffset(int center, int mouse) {
+    private static int getOffset(int center, int side, int mouse) {
         return (mouse - center) / side - (mouse < center ? 1 : 0);
     }
 
@@ -54,10 +52,10 @@ public class Chunk extends DrawableHelper {
     }
 
     private int getTrueX() {
-        return this.region.getCenterX() + this.offX * side;
+        return this.region.getCenterX() + this.offX * this.region.getChunkSide();
     }
     private int getTrueY() {
-        return this.region.getCenterY() + this.offY * side;
+        return this.region.getCenterY() + this.offY * this.region.getChunkSide();
     }
 
     private int getX1() {
@@ -69,11 +67,11 @@ public class Chunk extends DrawableHelper {
         return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
     }
     private int getX2() {
-        int x = this.getTrueX() + side;
+        int x = this.getTrueX() + this.region.getChunkSide();
         return this.region.getInX() < x ? Math.min(x, this.region.getInX() + this.region.getInSide()) : this.region.getInX();
     }
     private int getY2() {
-        int y = this.getTrueY() + side;
+        int y = this.getTrueY() + this.region.getChunkSide();
         return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
     }
 
@@ -81,7 +79,7 @@ public class Chunk extends DrawableHelper {
         matrices.push();
 
         try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
-            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), alpha);
+            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.getChunkSide(), alpha);
         }
 
         matrices.pop();
@@ -106,7 +104,7 @@ public class Chunk extends DrawableHelper {
             this.texture.upload();
         }
 
-        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY, int alpha) {
+        private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY, int side, int alpha) {
             this.updateTexture();
 
             float u1 = (float)(x1 - trueX) / side;

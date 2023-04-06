@@ -94,6 +94,16 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At("TAIL"), method = "mouseClicked", cancellable = true)
 	private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(cir.getReturnValue() && this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button));
+		cir.setReturnValue(this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button) && cir.getReturnValue());
+	}
+	@Inject(at = @At("TAIL"), method = "mouseReleased", cancellable = true)
+	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(this.mapSlotsWidget.mouseReleased(mouseX, mouseY, button) && cir.getReturnValue());
+	}
+	public void mouseMoved(double mouseX, double mouseY) {
+		this.mapSlotsWidget.mouseMoved(mouseX, mouseY);
+	}
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+		return this.mapSlotsWidget.mouseScrolled(mouseX, mouseY, amount) && super.mouseScrolled(mouseX, mouseY, amount);
 	}
 }
