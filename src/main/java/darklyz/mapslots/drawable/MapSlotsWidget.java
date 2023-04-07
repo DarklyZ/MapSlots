@@ -22,8 +22,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
     private static final int side = 166;
     public final ArrayList<Chunk> chunks = new ArrayList<>();
-    private final MinecraftClient client = MinecraftClient.getInstance();
     public final Inventory inventory = new SimpleInventory(2);
+    private MinecraftClient client;
     private boolean open = false;
     private int mX, mY, cOffX, cOffY, _cOffX, _cOffY;
     private boolean mouseDown = false;
@@ -41,7 +41,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
         return this.inventory.getStack(0).isEmpty();
     }
 
-    public void initialize(int parentX, int parentY) {
+    public void initialize(MinecraftClient client, int parentX, int parentY) {
+        this.client = client;
         this.parentX = parentX;
         this.parentY = parentY;
     }

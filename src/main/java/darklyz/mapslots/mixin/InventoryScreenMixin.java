@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
@@ -58,14 +59,11 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		this.mapButton.setPosition(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
-	private Element addDrawableChild(InventoryScreen instance, Element element) {
-		this.mapSlotsWidget.initialize(this.x, this.y);
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
+	private void init(CallbackInfo ci) {
+		this.mapSlotsWidget.initialize(this.client, this.x, this.y);
 
 		this.initButtons();
-
-		this.addDrawableChild(this.bookButton);
-		this.addDrawableChild(this.mapButton);
 
 		this.addDrawable(this.mapSlotsWidget);
 
@@ -79,6 +77,12 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 			this.bookButton.active =! this.bookButton.active;
 			this.updatePositionButtons();
 		}
+	}
+
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
+	private Element addDrawableChild(InventoryScreen instance, Element element) {
+		this.addDrawableChild(this.bookButton);
+		this.addDrawableChild(this.mapButton);
 		return this.bookButton;
 	}
 
