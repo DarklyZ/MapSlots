@@ -28,7 +28,7 @@ abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<Craf
 
     @Inject(at = @At("TAIL"), method = "<init>")
     private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.getOutSide() - 20, 2) {
+        this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.outSide() - 20, 2) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
             public boolean canInsert(ItemStack stack) {
                 return stack.isOf(Items.FILLED_MAP) && (!ItemStack.canCombine(stack, this.getStack()) && (this.getStack().isEmpty() || stack.getCount() == 1));
@@ -37,7 +37,7 @@ abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<Craf
                 return super.insertStack(stack, stack.isOf(Items.FILLED_MAP) ? 1 : count);
             }
         });
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.getOutSide() - 20, 20) {
+        this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.outSide() - 20, 20) {
             public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
         });
     }

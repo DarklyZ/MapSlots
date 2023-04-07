@@ -17,21 +17,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Chunk extends DrawableHelper {
-    private final Region region;
+    private final RegionGetter region;
     public final Integer mapId;
     private final int offX, offY;
 
-    public Chunk(Region region, Integer mapId, int offX, int offY) {
+    public Chunk(RegionGetter region, Integer mapId, int offX, int offY) {
         this.region = region;
         this.mapId = mapId;
         this.offX = offX;
         this.offY = offY;
     }
-    public Chunk(Region region, PacketByteBuf buf) {
+    public Chunk(RegionGetter region, PacketByteBuf buf) {
         this(region, buf.readOptional(PacketByteBuf::readInt).orElse(null), buf.readInt(), buf.readInt());
     }
-    public Chunk(Region region, int mouseX, int mouseY) {
-        this(region, region.getMapId(), getOffset(region.getCenterX(), region.getChunkSide(), mouseX), getOffset(region.getCenterY(), region.getChunkSide(), mouseY));
+    public Chunk(RegionGetter region, int mouseX, int mouseY) {
+        this(region, region.mapId(), getOffset(region.centerX(), region.chunkSide(), mouseX), getOffset(region.centerY(), region.chunkSide(), mouseY));
     }
     private static int getOffset(int center, int side, int mouse) {
         return (mouse - center) / side - (mouse < center ? 1 : 0);
@@ -52,34 +52,34 @@ public class Chunk extends DrawableHelper {
     }
 
     private int getTrueX() {
-        return this.region.getCenterX() + this.offX * this.region.getChunkSide();
+        return this.region.centerX() + this.offX * this.region.chunkSide();
     }
     private int getTrueY() {
-        return this.region.getCenterY() + this.offY * this.region.getChunkSide();
+        return this.region.centerY() + this.offY * this.region.chunkSide();
     }
 
     private int getX1() {
         int x = this.getTrueX();
-        return this.region.getInX() < x ? Math.min(x, this.region.getInX() + this.region.getInSide()) : this.region.getInX();
+        return this.region.inX() < x ? Math.min(x, this.region.inX() + this.region.inSide()) : this.region.inX();
     }
     private int getY1() {
         int y = this.getTrueY();
-        return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
+        return this.region.inY() < y ? Math.min(y, this.region.inY() + this.region.inSide()) : this.region.inY();
     }
     private int getX2() {
-        int x = this.getTrueX() + this.region.getChunkSide();
-        return this.region.getInX() < x ? Math.min(x, this.region.getInX() + this.region.getInSide()) : this.region.getInX();
+        int x = this.getTrueX() + this.region.chunkSide();
+        return this.region.inX() < x ? Math.min(x, this.region.inX() + this.region.inSide()) : this.region.inX();
     }
     private int getY2() {
-        int y = this.getTrueY() + this.region.getChunkSide();
-        return this.region.getInY() < y ? Math.min(y, this.region.getInY() + this.region.getInSide()) : this.region.getInY();
+        int y = this.getTrueY() + this.region.chunkSide();
+        return this.region.inY() < y ? Math.min(y, this.region.inY() + this.region.inSide()) : this.region.inY();
     }
 
     public void drawMap(MatrixStack matrices, MinecraftClient client, int alpha) {
         matrices.push();
 
         try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
-            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.getChunkSide(), alpha);
+            mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
         }
 
         matrices.pop();
