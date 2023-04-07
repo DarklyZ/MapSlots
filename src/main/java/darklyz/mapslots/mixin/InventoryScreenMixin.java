@@ -73,14 +73,12 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 			this.mapButton.active =! this.mapButton.active;
 			this.mapSlotsWidget.setOpen(false);
 		}
-
 		if (this.mapSlotsWidget.isOpen()) {
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
 			this.bookButton.active =! this.bookButton.active;
 			this.updatePositionButtons();
 		}
-
 		return this.bookButton;
 	}
 
