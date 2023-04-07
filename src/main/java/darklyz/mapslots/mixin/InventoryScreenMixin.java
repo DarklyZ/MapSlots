@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
@@ -68,6 +67,11 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		this.addDrawableChild(this.bookButton);
 		this.addDrawableChild(this.mapButton);
 
+		this.addSelectableChild(this.recipeBook);
+		this.setInitialFocus(this.recipeBook);
+
+		this.addDrawable(this.mapSlotsWidget);
+
 		if (this.recipeBook.isOpen()) {
 			this.mapButton.active =! this.mapButton.active;
 			this.mapSlotsWidget.setOpen(false);
@@ -81,30 +85,27 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		}
 	}
 
-	@Inject(at = @At("JUMP"), method = "render")
-	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		if (this.mapSlotsWidget.isOpen())
-			this.mapSlotsWidget.render(matrices, mouseX, mouseY, delta);
-	}
-
 	@Inject(at = @At("TAIL"), method = "isClickOutsideBounds", cancellable = true)
 	private void isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(cir.getReturnValue() && this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY));
+		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY) && cir.getReturnValue());
 	}
 
-	@Inject(at = @At("TAIL"), method = "mouseClicked", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "mouseClicked", cancellable = true)
 	private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button) && cir.getReturnValue());
+		if (this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button))
+			cir.setReturnValue(true);
 	}
-	@Inject(at = @At("TAIL"), method = "mouseReleased", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
 	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.mapSlotsWidget.mouseReleased(mouseX, mouseY, button) && cir.getReturnValue());
+		if (this.mapSlotsWidget.mouseReleased(mouseX, mouseY, button))
+			cir.setReturnValue(true);
 	}
 	public void mouseMoved(double mouseX, double mouseY) {
 		this.mapSlotsWidget.mouseMoved(mouseX, mouseY);
-		super.mouseMoved(mouseX, mouseY);
 	}
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-		return this.mapSlotsWidget.mouseScrolled(mouseX, mouseY, amount) && super.mouseScrolled(mouseX, mouseY, amount);
+		if (this.mapSlotsWidget.mouseScrolled(mouseX, mouseY, amount))
+			return true;
+		return super.mouseScrolled(mouseX, mouseY, amount);
 	}
 }

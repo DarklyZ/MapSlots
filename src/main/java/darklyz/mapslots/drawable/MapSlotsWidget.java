@@ -52,6 +52,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
     }
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (!this.isOpen()) return;
+
         matrices.push();
         matrices.translate(0.0f, 0.0f, 100.0f);
 
@@ -78,45 +80,49 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.isMouseInsideBounds(mouseX, mouseY) && this.isRemoveMode() && InputUtil.fromTranslationKey("key.mouse.left").getCode() == button) {
-            this.mX = (int)mouseX;
-            this.mY = (int)mouseY;
-            this._cOffX = this.cOffX;
-            this._cOffY = this.cOffY;
-            this.mouseDown = true;
-        }
+        if (!this.isMouseInsideBounds(mouseX, mouseY) || !this.isRemoveMode() || InputUtil.fromTranslationKey("key.mouse.left").getCode() != button)
+            return false;
+
+        this.mX = (int)mouseX;
+        this.mY = (int)mouseY;
+        this._cOffX = this.cOffX;
+        this._cOffY = this.cOffY;
+        this.mouseDown = true;
         return true;
     }
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         this.mX = this.mY = this._cOffX = this._cOffY = 0;
         this.mouseDown = false;
 
-        if (this.isMouseInsideBounds(mouseX, mouseY))
-            ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
+        if (!this.isMouseInsideBounds(mouseX, mouseY))
+            return false;
 
+        ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
         return true;
     }
     public void mouseMoved(double mouseX, double mouseY) {
-        if (this.mouseDown) {
-            this.cOffX = this._cOffX + (int)mouseX - this.mX;
-            this.cOffY = this._cOffY + (int)mouseY - this.mY;
-        }
+        if (!this.mouseDown)
+            return;
+
+        this.cOffX = this._cOffX + (int)mouseX - this.mX;
+        this.cOffY = this._cOffY + (int)mouseY - this.mY;
     }
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         int futureSide = this.chunkSide + 20 * (int)amount;
 
-        if (this.isMouseInsideBounds(mouseX, mouseY) && !this.mouseDown && futureSide >= 30 && futureSide <= 330) {
-            int x = (int)mouseX - this.centerX();
-            int y = (int)mouseY - this.centerY();
+        if (!this.isMouseInsideBounds(mouseX, mouseY) || this.mouseDown || futureSide < 30 || futureSide > 330)
+            return false;
 
-            int cX = x / this.chunkSide + (x >= 0 ? 1 : -1);
-            int cY = y / this.chunkSide + (y >= 0 ? 1 : -1);
+        int x = (int)mouseX - this.centerX();
+        int y = (int)mouseY - this.centerY();
 
-            this.cOffX -= x * cX * futureSide / (cX * this.chunkSide) - x;
-            this.cOffY -= y * cY * futureSide / (cY * this.chunkSide) - y;
+        int cX = x / this.chunkSide + (x >= 0 ? 1 : -1);
+        int cY = y / this.chunkSide + (y >= 0 ? 1 : -1);
 
-            this.chunkSide = futureSide;
-        }
+        this.cOffX -= x * cX * futureSide / (cX * this.chunkSide) - x;
+        this.cOffY -= y * cY * futureSide / (cY * this.chunkSide) - y;
+
+        this.chunkSide = futureSide;
         return true;
     }
 
