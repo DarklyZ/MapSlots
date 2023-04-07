@@ -102,6 +102,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 	}
 	public void mouseMoved(double mouseX, double mouseY) {
 		this.mapSlotsWidget.mouseMoved(mouseX, mouseY);
+		super.mouseMoved(mouseX, mouseY);
 	}
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
 		return this.mapSlotsWidget.mouseScrolled(mouseX, mouseY, amount) && super.mouseScrolled(mouseX, mouseY, amount);
