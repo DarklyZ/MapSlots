@@ -3,8 +3,7 @@ package darklyz.mapslots.drawable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import darklyz.mapslots.packet.ChunksPacket;
 import darklyz.mapslots.util.Chunk;
-import darklyz.mapslots.util.RegionGetter;
-import net.minecraft.client.MinecraftClient;
+import darklyz.mapslots.abc.RegionGetter;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
@@ -27,7 +26,6 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
     private static final int side = 166;
     public final ArrayList<Chunk> chunks = Lists.newArrayList();
     public final Inventory inventory = new SimpleInventory(2);
-    private MinecraftClient client;
     private boolean open = false;
     private int mX, mY, cOffX, cOffY, _cOffX, _cOffY;
     private boolean focused = false;
@@ -45,8 +43,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
         return this.inventory.getStack(0).isEmpty();
     }
 
-    public void initialize(MinecraftClient client, int parentX, int parentY) {
-        this.client = client;
+    public void initialize(int parentX, int parentY) {
         this.parentX = parentX;
         this.parentY = parentY;
     }
@@ -68,11 +65,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 
         drawTexture(matrices, this.outX(), this.outY(), side, side, 0, 0, 64, 64, 64, 64);
 
-        for (Chunk chunk : this.chunks)
-            chunk.drawMap(matrices, this.client, 255);
-
         if (this.isMouseOver(mouseX, mouseY) && this.isInsertMode())
-            new Chunk(this, mouseX, mouseY).drawMap(matrices, this.client, 120);
+            new Chunk(this, mouseX, mouseY).drawMap(matrices, 120);
 
         matrices.pop();
     }

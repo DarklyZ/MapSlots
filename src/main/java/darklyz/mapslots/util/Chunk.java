@@ -1,8 +1,10 @@
 package darklyz.mapslots.util;
 
+import darklyz.mapslots.abc.RegionGetter;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -16,7 +18,7 @@ import org.joml.Matrix4f;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Chunk extends DrawableHelper {
+public class Chunk extends DrawableHelper implements Drawable {
     private final RegionGetter region;
     public final Integer mapId;
     private final int offX, offY;
@@ -75,12 +77,16 @@ public class Chunk extends DrawableHelper {
         return this.region.inY() < y ? Math.min(y, this.region.inY() + this.region.inSide()) : this.region.inY();
     }
 
-    public void drawMap(MatrixStack matrices, MinecraftClient client, int alpha) {
-        matrices.push();
-
-        try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
+    public void drawMap(MatrixStack matrices, int alpha) {
+        try (MapTexture mapTexture = new MapTexture(MinecraftClient.getInstance(), this.mapId)) {
             mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
         }
+    }
+
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        matrices.push();
+
+        this.drawMap(matrices, 255);
 
         matrices.pop();
     }

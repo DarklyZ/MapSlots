@@ -1,8 +1,9 @@
 package darklyz.mapslots.mixin;
 
 import darklyz.mapslots.MapSlots;
+import darklyz.mapslots.abc.MapSlotsScreen;
 import darklyz.mapslots.drawable.MapSlotsWidget;
-import darklyz.mapslots.util.MapSlotsHandler;
+import darklyz.mapslots.abc.MapSlotsHandler;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -22,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
-abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
+abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements MapSlotsScreen {
 	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(
 			MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
 	private final MapSlotsWidget mapSlotsWidget =
@@ -59,13 +60,16 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		this.mapButton.setPosition(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
 	}
 
+	public void clearAndInit() { super.clearAndInit(); }
+
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private void init(CallbackInfo ci) {
-		this.mapSlotsWidget.initialize(this.client, this.x, this.y);
+		this.mapSlotsWidget.initialize(this.x, this.y);
 
 		this.initButtons();
 
 		this.addDrawableChild(this.mapSlotsWidget);
+		this.mapSlotsWidget.chunks.forEach(this::addDrawable);
 
 		if (this.recipeBook.isOpen()) {
 			this.mapButton.active =! this.mapButton.active;

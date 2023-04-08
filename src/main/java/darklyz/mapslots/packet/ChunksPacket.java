@@ -1,9 +1,10 @@
 package darklyz.mapslots.packet;
 
 import darklyz.mapslots.MapSlots;
+import darklyz.mapslots.abc.MapSlotsScreen;
 import darklyz.mapslots.drawable.MapSlotsWidget;
 import darklyz.mapslots.util.Chunk;
-import darklyz.mapslots.util.MapSlotsHandler;
+import darklyz.mapslots.abc.MapSlotsHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -67,7 +68,7 @@ public class ChunksPacket {
                                  ClientPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
                                  PacketSender ignoredSender) {
-        if (client.player == null)
+        if (client.player == null || client.currentScreen == null)
             return;
 
         MapSlotsWidget mSWidget = ((MapSlotsHandler)client.player.playerScreenHandler).getMSWidget();
@@ -77,6 +78,8 @@ public class ChunksPacket {
             if (chunk.mapId == null)
                 mSWidget.chunks.remove(chunk);
             else mSWidget.chunks.add(chunk);
+
+            ((MapSlotsScreen)client.currentScreen).clearAndInit();
         });
     }
 }

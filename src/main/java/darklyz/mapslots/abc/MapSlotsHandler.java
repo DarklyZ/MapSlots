@@ -1,4 +1,4 @@
-package darklyz.mapslots.util;
+package darklyz.mapslots.abc;
 
 import darklyz.mapslots.drawable.MapSlotsWidget;
 
