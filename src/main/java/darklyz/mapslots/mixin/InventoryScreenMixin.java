@@ -65,7 +65,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 		this.initButtons();
 
-		this.addDrawable(this.mapSlotsWidget);
+		this.addDrawableChild(this.mapSlotsWidget);
 
 		if (this.recipeBook.isOpen()) {
 			this.mapButton.active =! this.mapButton.active;
@@ -91,22 +91,9 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		cir.setReturnValue(this.mapSlotsWidget.isClickOutsideBounds(mouseX, mouseY) && cir.getReturnValue());
 	}
 
-	@Inject(at = @At("HEAD"), method = "mouseClicked", cancellable = true)
-	private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (this.mapSlotsWidget.mouseClicked(mouseX, mouseY, button))
-			cir.setReturnValue(true);
-	}
-	@Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "mouseReleased")
 	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (this.mapSlotsWidget.mouseReleased(mouseX, mouseY, button))
-			cir.setReturnValue(true);
-	}
-	public void mouseMoved(double mouseX, double mouseY) {
-		this.mapSlotsWidget.mouseMoved(mouseX, mouseY);
-	}
-	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-		if (this.mapSlotsWidget.mouseScrolled(mouseX, mouseY, amount))
-			return true;
-		return super.mouseScrolled(mouseX, mouseY, amount);
+		if (this.getFocused() instanceof MapSlotsWidget)
+			this.setFocused(null);
 	}
 }

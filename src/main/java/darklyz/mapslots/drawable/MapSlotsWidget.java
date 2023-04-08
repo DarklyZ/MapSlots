@@ -7,6 +7,9 @@ import darklyz.mapslots.util.RegionGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,18 +18,19 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 
-public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGetter {
+public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, RegionGetter {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
     private static final int side = 166;
-    public final ArrayList<Chunk> chunks = new ArrayList<>();
+    public final ArrayList<Chunk> chunks = Lists.newArrayList();
     public final Inventory inventory = new SimpleInventory(2);
     private MinecraftClient client;
     private boolean open = false;
     private int mX, mY, cOffX, cOffY, _cOffX, _cOffY;
-    private boolean mouseDown = false;
+    private boolean focused = false;
     private int chunkSide = 30;
     private int parentX, parentY;
 
@@ -67,7 +71,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
         for (Chunk chunk : this.chunks)
             chunk.drawMap(matrices, this.client, 255);
 
-        if (this.isMouseInsideBounds(mouseX, mouseY) && this.isInsertMode())
+        if (this.isMouseOver(mouseX, mouseY) && this.isInsertMode())
             new Chunk(this, mouseX, mouseY).drawMap(matrices, this.client, 120);
 
         matrices.pop();
@@ -76,42 +80,33 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
     public boolean isClickOutsideBounds(double mouseX, double mouseY) {
         return !this.isOpen() || mouseX < this.outX()-18 || mouseY < this.outY() || mouseX > this.outX() + side || mouseY > this.outY() + side;
     }
-    private boolean isMouseInsideBounds(double mouseX, double mouseY) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return this.isOpen() && mouseX >= this.inX() && mouseY >= this.inY() && mouseX <= this.inX() + this.inSide() && mouseY <= this.inY() + this.inSide();
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!this.isMouseInsideBounds(mouseX, mouseY) || !this.isRemoveMode() || InputUtil.fromTranslationKey("key.mouse.left").getCode() != button)
+        if (!this.isMouseOver(mouseX, mouseY) || !this.isRemoveMode() || InputUtil.fromTranslationKey("key.mouse.left").getCode() != button)
             return false;
 
         this.mX = (int)mouseX;
         this.mY = (int)mouseY;
         this._cOffX = this.cOffX;
         this._cOffY = this.cOffY;
-        this.mouseDown = true;
         return true;
     }
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        this.mX = this.mY = this._cOffX = this._cOffY = 0;
-        this.mouseDown = false;
-
-        if (!this.isMouseInsideBounds(mouseX, mouseY))
-            return false;
-
         ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
         return true;
     }
-    public void mouseMoved(double mouseX, double mouseY) {
-        if (!this.mouseDown)
-            return;
-
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         this.cOffX = this._cOffX + (int)mouseX - this.mX;
         this.cOffY = this._cOffY + (int)mouseY - this.mY;
+        return true;
     }
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         int futureSide = this.chunkSide + 20 * (int)amount;
 
-        if (!this.isMouseInsideBounds(mouseX, mouseY) || this.mouseDown || futureSide < 30 || futureSide > 330)
+        if (this.isFocused() || futureSide < 30 || futureSide > 330)
             return false;
 
         int x = (int)mouseX - this.centerX();
@@ -126,6 +121,14 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
         this.chunkSide = futureSide;
         return true;
     }
+
+    public void setFocused(boolean focused) {
+        if (!focused)
+            this.mX = this.mY = this._cOffX = this._cOffY = 0;
+
+        this.focused = focused;
+    }
+    public boolean isFocused() { return this.focused; }
 
     public Integer mapId() {
         return FilledMapItem.getMapId(this.inventory.getStack(0));
@@ -143,4 +146,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, RegionGe
         return this.inY() + this.inSide()/2 + this.cOffY;
     }
     public int chunkSide() { return this.chunkSide; }
+
+    public SelectionType getType() {
+        return this.isOpen() ? SelectionType.HOVERED : SelectionType.NONE;
+    }
+    public boolean isNarratable() { return false; }
+    public void appendNarrations(NarrationMessageBuilder builder) {}
 }
