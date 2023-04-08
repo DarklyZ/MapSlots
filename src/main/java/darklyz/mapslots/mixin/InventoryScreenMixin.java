@@ -93,7 +93,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At("HEAD"), method = "mouseReleased")
 	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (this.getFocused() instanceof MapSlotsWidget)
+		if (this.getFocused() instanceof MapSlotsWidget || this.getFocused() instanceof TexturedButtonWidget)
 			this.setFocused(null);
 	}
 }
