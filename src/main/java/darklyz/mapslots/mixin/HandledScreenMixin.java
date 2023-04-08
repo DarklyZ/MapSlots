@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HandledScreen.class)
 abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen implements ScreenHandlerProvider<T> {
-    protected HandledScreenMixin(Text title) { super(title); }
+    private HandledScreenMixin(Text title) { super(title); }
 
     @Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
     private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
