@@ -2,7 +2,6 @@ package darklyz.mapslots.drawable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import darklyz.mapslots.packet.ChunksPacket;
-import darklyz.mapslots.util.Chunk;
 import darklyz.mapslots.abc.RegionGetter;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;

@@ -1,4 +1,4 @@
-package darklyz.mapslots.util;
+package darklyz.mapslots.drawable;
 
 import darklyz.mapslots.abc.RegionGetter;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;

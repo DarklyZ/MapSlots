@@ -3,7 +3,7 @@ package darklyz.mapslots.packet;
 import darklyz.mapslots.MapSlots;
 import darklyz.mapslots.abc.MapSlotsScreen;
 import darklyz.mapslots.drawable.MapSlotsWidget;
-import darklyz.mapslots.util.Chunk;
+import darklyz.mapslots.drawable.Chunk;
 import darklyz.mapslots.abc.MapSlotsHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
