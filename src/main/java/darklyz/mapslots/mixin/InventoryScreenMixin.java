@@ -68,9 +68,6 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 		this.initButtons();
 
-		this.addDrawableChild(this.mapSlotsWidget);
-		this.mapSlotsWidget.chunks.forEach(this::addDrawable);
-
 		if (this.recipeBook.isOpen()) {
 			this.mapButton.active =! this.mapButton.active;
 			this.mapSlotsWidget.setOpen(false);
@@ -87,6 +84,8 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 	private Element addDrawableChild(InventoryScreen instance, Element element) {
 		this.addDrawableChild(this.bookButton);
 		this.addDrawableChild(this.mapButton);
+		this.addDrawableChild(this.mapSlotsWidget);
+		this.mapSlotsWidget.chunks.forEach(this::addDrawable);
 		return this.bookButton;
 	}
 

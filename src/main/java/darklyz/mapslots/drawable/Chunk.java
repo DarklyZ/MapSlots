@@ -77,7 +77,7 @@ public class Chunk implements Drawable {
     }
 
     public void drawMap(MatrixStack matrices, int alpha) {
-        try (MapTexture mapTexture = new MapTexture(MinecraftClient.getInstance(), this.mapId)) {
+        try (MapTexture mapTexture = new MapTexture(this.mapId)) {
             mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
         }
     }
@@ -86,7 +86,10 @@ public class Chunk implements Drawable {
         if (!this.region.isOpen()) return;
 
         matrices.push();
+        matrices.translate(0.0f, 0.0f, 100.1f);
+
         this.drawMap(matrices, 255);
+
         matrices.pop();
     }
 
@@ -95,7 +98,8 @@ public class Chunk implements Drawable {
         private final NativeImageBackedTexture texture;
         private final RenderLayer renderLayer;
 
-        private MapTexture(MinecraftClient client, Integer mapId) {
+        private MapTexture(Integer mapId) {
+            MinecraftClient client = MinecraftClient.getInstance();
             this.state = FilledMapItem.getMapState(mapId, client.world);
             this.texture = new NativeImageBackedTexture(128, 128, true);
             Identifier identifier = client.getTextureManager().registerDynamicTexture("mapslots/" + mapId, this.texture);
