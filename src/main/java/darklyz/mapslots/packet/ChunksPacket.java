@@ -68,7 +68,7 @@ public class ChunksPacket {
                                  ClientPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
                                  PacketSender ignoredSender) {
-        if (client.player == null || client.currentScreen == null)
+        if (client.player == null)
             return;
 
         MapSlotsWidget mSWidget = ((MapSlotsHandler)client.player.playerScreenHandler).getMSWidget();
@@ -79,7 +79,8 @@ public class ChunksPacket {
                 mSWidget.chunks.remove(chunk);
             else mSWidget.chunks.add(chunk);
 
-            ((MapSlotsScreen)client.currentScreen).clearAndInit();
+            if (client.currentScreen instanceof MapSlotsScreen screen)
+                screen.clearAndInit();
         });
     }
 }
