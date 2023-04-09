@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +17,7 @@ import org.joml.Matrix4f;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Chunk extends DrawableHelper implements Drawable {
+public class Chunk implements Drawable {
     private final RegionGetter region;
     public final Integer mapId;
     private final int offX, offY;
@@ -84,10 +83,10 @@ public class Chunk extends DrawableHelper implements Drawable {
     }
 
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (!this.region.isOpen()) return;
+
         matrices.push();
-
         this.drawMap(matrices, 255);
-
         matrices.pop();
     }
 
