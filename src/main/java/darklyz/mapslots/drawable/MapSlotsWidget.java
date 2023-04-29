@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, RegionGetter {
     private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
-    private static final int side = 166;
     public final ArrayList<Chunk> chunks = Lists.newArrayList();
     public final Inventory inventory = new SimpleInventory(2);
     private boolean open = false;
@@ -48,7 +47,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
     }
     
     public int getMoveX(int parentX) {
-        this.parentX = parentX + (this.isOpen() ? side / 2 : -side / 2);
+        this.parentX = parentX + this.side()/2 * (this.isOpen() ? 1 : -1);
         return this.parentX;
     }
 
@@ -62,7 +61,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
         RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        drawTexture(matrices, this.outX(), this.outY(), side, side, 0, 0, 64, 64, 64, 64);
+        drawTexture(matrices, this.outX(), this.outY(), this.side(), this.side(), 0, 0, 64, 64, 64, 64);
 
         if (this.isMouseOver(mouseX, mouseY) && this.isInsertMode())
             new Chunk(this, mouseX, mouseY).drawMap(matrices, 120);
@@ -71,7 +70,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
     }
 
     public boolean isClickOutsideBounds(double mouseX, double mouseY) {
-        return !this.isOpen() || mouseX < this.outX()-18 || mouseY < this.outY() || mouseX > this.outX() + side || mouseY > this.outY() + side;
+        return !this.isOpen() || mouseX < this.outX()-18 || mouseY < this.outY() || mouseX > this.outX() + this.side() || mouseY > this.outY() + this.side();
     }
     public boolean isMouseOver(double mouseX, double mouseY) {
         return this.isOpen() && mouseX >= this.inX() && mouseY >= this.inY() && mouseX <= this.inX() + this.inSide() && mouseY <= this.inY() + this.inSide();
@@ -128,10 +127,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
     }
     public int inX() { return this.outX() + 5; }
     public int inY() { return this.outY() + 5; }
-    public int inSide() { return this.outSide() - 10; }
-    public int outX() { return this.parentX-2 - side; }
+    public int inSide() { return this.side() - 10; }
+    public int outX() { return this.parentX-2 - this.side(); }
     public int outY() { return this.parentY; }
-    public int outSide() { return side; }
+    public int side() { return 166; }
     public int centerX() {
         return this.inX() + this.inSide()/2 + this.cOffX;
     }
