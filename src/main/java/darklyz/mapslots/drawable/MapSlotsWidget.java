@@ -25,7 +25,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
     public final ArrayList<Chunk> chunks = Lists.newArrayList();
     public final Inventory inventory = new SimpleInventory(2);
     private boolean open = false;
-    private int mX, mY, cOffX, cOffY, _cOffX, _cOffY;
+    private int mOffX, mOffY, cOffX, cOffY;
     private boolean focused = false;
     private int chunkSide = 30;
     private int parentX, parentY;
@@ -80,10 +80,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
         if (!this.isMouseOver(mouseX, mouseY) || !this.isRemoveMode() || InputUtil.fromTranslationKey("key.mouse.left").getCode() != button)
             return false;
 
-        this.mX = (int)mouseX;
-        this.mY = (int)mouseY;
-        this._cOffX = this.cOffX;
-        this._cOffY = this.cOffY;
+        this.mOffX = this.cOffX - (int)mouseX;
+        this.mOffY = this.cOffY - (int)mouseY;
         return true;
     }
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
@@ -91,8 +89,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
         return true;
     }
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        this.cOffX = this._cOffX + (int)mouseX - this.mX;
-        this.cOffY = this._cOffY + (int)mouseY - this.mY;
+        this.cOffX = this.mOffX + (int)mouseX;
+        this.cOffY = this.mOffY + (int)mouseY;
         return true;
     }
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
@@ -116,7 +114,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 
     public void setFocused(boolean focused) {
         if (!focused)
-            this.mX = this.mY = this._cOffX = this._cOffY = 0;
+            this.mOffX = this.mOffY = 0;
 
         this.focused = focused;
     }
