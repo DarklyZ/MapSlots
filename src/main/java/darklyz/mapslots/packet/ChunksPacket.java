@@ -68,8 +68,7 @@ public class ChunksPacket {
                                  ClientPlayNetworkHandler ignoredNetwork,
                                  PacketByteBuf buf,
                                  PacketSender ignoredSender) {
-        if (client.player == null)
-            return;
+        if (client.player == null) return;
 
         MapSlotsWidget mSWidget = ((MapSlotsHandler)client.player.playerScreenHandler).getMSWidget();
         Chunk chunk = new Chunk(mSWidget, buf);

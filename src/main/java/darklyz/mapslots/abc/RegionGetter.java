@@ -8,7 +8,7 @@ public interface RegionGetter {
     int inSide();
     int outX();
     int outY();
-    int outSide();
+    int side();
     int centerX();
     int centerY();
     int chunkSide();
