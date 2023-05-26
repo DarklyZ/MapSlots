@@ -24,10 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
 abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements MapSlotsScreen {
-	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(
-			MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
-	private final MapSlotsWidget mapSlotsWidget =
-			((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
+	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
+	private final MapSlotsWidget mapSlotsWidget = ((MapSlotsHandler)this.getScreenHandler()).getMSWidget();
 	private TexturedButtonWidget bookButton, mapButton;
 	@Shadow @Final private static Identifier RECIPE_BUTTON_TEXTURE;
 	@Shadow @Final private RecipeBookWidget recipeBook;

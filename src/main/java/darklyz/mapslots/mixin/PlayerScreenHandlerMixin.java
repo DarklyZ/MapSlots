@@ -18,27 +18,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerScreenHandler.class)
 abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements MapSlotsHandler {
-    private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
+	private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
 
-    private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
-        super(screenHandlerType, i);
-    }
+	private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
+		super(screenHandlerType, i);
+	}
 
-    public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
+	public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
 
-    @Inject(at = @At("TAIL"), method = "<init>")
-    private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.side() - 20, 2) {
-            public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
-            public boolean canInsert(ItemStack stack) {
-                return stack.isOf(Items.FILLED_MAP) && (!ItemStack.canCombine(stack, this.getStack()) && (this.getStack().isEmpty() || stack.getCount() == 1));
-            }
-            public ItemStack insertStack(ItemStack stack, int count) {
-                return super.insertStack(stack, stack.isOf(Items.FILLED_MAP) ? 1 : count);
-            }
-        });
-        this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.side() - 20, 20) {
-            public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
-        });
-    }
+	@Inject(at = @At("TAIL"), method = "<init>")
+	private void init(PlayerInventory inventory, boolean onServer, PlayerEntity owner, CallbackInfo ci) {
+		this.addSlot(new Slot(mapSlotsWidget.inventory, 0, -mapSlotsWidget.side() - 20, 2) {
+			public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
+			public boolean canInsert(ItemStack stack) {
+				return stack.isOf(Items.FILLED_MAP) && (!ItemStack.canCombine(stack, this.getStack()) && (this.getStack().isEmpty() || stack.getCount() == 1));
+			}
+			public ItemStack insertStack(ItemStack stack, int count) {
+				return super.insertStack(stack, stack.isOf(Items.FILLED_MAP) ? 1 : count);
+			}
+		});
+		this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.side() - 20, 20) {
+			public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
+		});
+	}
 }

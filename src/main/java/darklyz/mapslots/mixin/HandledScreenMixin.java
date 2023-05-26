@@ -12,17 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(HandledScreen.class)
 abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen implements ScreenHandlerProvider<T> {
-    private HandledScreenMixin(Text title) { super(title); }
+	private HandledScreenMixin(Text title) { super(title); }
 
-    @Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
-    private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (super.mouseReleased(mouseX, mouseY, button))
-            cir.setReturnValue(true);
-    }
+	@Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
+	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+		if (super.mouseReleased(mouseX, mouseY, button))
+			cir.setReturnValue(true);
+	}
 
-    @Inject(at = @At("HEAD"), method = "mouseDragged", cancellable = true)
-    private void mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
-        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
-            cir.setReturnValue(true);
-    }
+	@Inject(at = @At("HEAD"), method = "mouseDragged", cancellable = true)
+	private void mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
+		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
+			cir.setReturnValue(true);
+	}
 }
