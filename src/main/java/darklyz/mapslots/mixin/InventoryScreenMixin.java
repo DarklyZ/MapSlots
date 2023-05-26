@@ -35,53 +35,45 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		super(screenHandler, playerInventory, text);
 	}
 
-	private void initButtons() {
-		this.bookButton = new TexturedButtonWidget(this.x + 104, this.height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
-			this.recipeBook.toggleOpen();
-			this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
-			this.mouseDown = true;
-
-			this.mapButton.active =! this.mapButton.active;
-			this.updatePositionButtons();
-		});
-		this.mapButton = new TexturedButtonWidget(this.x + 126, this.height / 2 - 22, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
-			this.mapSlotsWidget.toggleOpen();
-			this.x = this.mapSlotsWidget.getMoveX(this.x);
-
-			this.bookButton.active =! this.bookButton.active;
-			this.updatePositionButtons();
-		});
-	}
-
-	private void updatePositionButtons() {
-		this.bookButton.setPosition(this.x + 104, this.height / 2 - 22);
-		this.mapButton.setPosition(this.x + (this.bookButton.active ? 126 : 104), this.height / 2 - 22);
-	}
-
 	public void clearAndInit() { super.clearAndInit(); }
+
+	private void updateActiveButtons() {
+		this.mapButton.active = !this.recipeBook.isOpen();
+		this.bookButton.active = !this.mapSlotsWidget.isOpen();
+	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private void init(CallbackInfo ci) {
 		this.mapSlotsWidget.initialize(this.x, this.y);
 
-		this.initButtons();
-
-		if (this.recipeBook.isOpen()) {
-			this.mapButton.active =! this.mapButton.active;
+		if (this.recipeBook.isOpen())
 			this.mapSlotsWidget.setOpen(false);
-		}
-		if (this.mapSlotsWidget.isOpen()) {
-			this.x = this.mapSlotsWidget.getMoveX(this.x);
 
-			this.bookButton.active =! this.bookButton.active;
-			this.updatePositionButtons();
-		}
+		if (this.mapSlotsWidget.isOpen())
+			this.x = this.mapSlotsWidget.getMoveX(this.x);
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private Element addDrawableChild(InventoryScreen instance, Element element) {
-		this.addDrawableChild(this.bookButton);
-		this.addDrawableChild(this.mapButton);
+		this.bookButton = this.addDrawableChild(new TexturedButtonWidget(0, 0, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
+			this.recipeBook.toggleOpen();
+			this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
+			this.mouseDown = true;
+			this.updateActiveButtons();
+		}) {
+			public int getX() { return InventoryScreenMixin.this.x + 104; }
+			public int getY() { return InventoryScreenMixin.this.height / 2 - 22; }
+		});
+		this.mapButton = this.addDrawableChild(new TexturedButtonWidget(0, 0, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
+			this.mapSlotsWidget.toggleOpen();
+			this.x = this.mapSlotsWidget.getMoveX(this.x);
+			this.updateActiveButtons();
+		}) {
+			public int getX() { return InventoryScreenMixin.this.x + (InventoryScreenMixin.this.bookButton.active ? 126 : 104); }
+			public int getY() { return InventoryScreenMixin.this.height / 2 - 22; }
+		});
+		this.updateActiveButtons();
+
 		this.addDrawableChild(this.mapSlotsWidget);
 		this.mapSlotsWidget.chunks.forEach(this::addDrawable);
 		return this.bookButton;
@@ -94,7 +86,6 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At("HEAD"), method = "mouseReleased")
 	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (this.getFocused() instanceof MapSlotsWidget || this.getFocused() instanceof TexturedButtonWidget)
-			this.setFocused(null);
+		if (this.getFocused() instanceof MapSlotsWidget) this.setFocused(null);
 	}
 }
