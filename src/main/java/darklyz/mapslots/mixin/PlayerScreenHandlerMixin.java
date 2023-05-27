@@ -20,9 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements MapSlotsHandler {
 	private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
 
-	private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) {
-		super(screenHandlerType, i);
-	}
+	private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) { super(screenHandlerType, i); }
 
 	public MapSlotsWidget getMSWidget() { return this.mapSlotsWidget; }
 

@@ -74,12 +74,10 @@ public class ChunksPacket {
 		Chunk chunk = new Chunk(mSWidget, buf);
 
 		client.execute(() -> {
-			if (chunk.mapId == null)
-				mSWidget.chunks.remove(chunk);
-			else mSWidget.chunks.add(chunk);
+			if (chunk.mapId != null) mSWidget.chunks.add(chunk);
+			else mSWidget.chunks.remove(chunk);
 
-			if (client.currentScreen instanceof MapSlotsScreen screen)
-				screen.clearAndInit();
+			if (client.currentScreen instanceof MapSlotsScreen screen) screen.clearAndInit();
 		});
 	}
 }

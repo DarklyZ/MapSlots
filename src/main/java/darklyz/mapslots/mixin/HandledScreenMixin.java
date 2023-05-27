@@ -16,13 +16,11 @@ abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen implem
 
 	@Inject(at = @At("HEAD"), method = "mouseReleased", cancellable = true)
 	private void mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseReleased(mouseX, mouseY, button))
-			cir.setReturnValue(true);
+		if (super.mouseReleased(mouseX, mouseY, button)) cir.setReturnValue(true);
 	}
 
 	@Inject(at = @At("HEAD"), method = "mouseDragged", cancellable = true)
 	private void mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
-			cir.setReturnValue(true);
+		if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) cir.setReturnValue(true);
 	}
 }

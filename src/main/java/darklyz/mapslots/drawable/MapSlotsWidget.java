@@ -24,22 +24,15 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
 	public final ArrayList<Chunk> chunks = Lists.newArrayList();
 	public final Inventory inventory = new SimpleInventory(2);
-	private boolean open = false;
-	private int mOffX, mOffY, cOffX, cOffY;
-	private boolean focused = false;
-	private int chunkSide = 30;
-	private int parentX, parentY;
+	private int parentX, parentY, mOffX, mOffY, cOffX, cOffY, chunkSide = 30;
+	private boolean open = false, focused = false;
 
 	public boolean isOpen() { return this.open; }
 	public void setOpen(boolean opened) { this.open = opened; }
 	public void toggleOpen() { this.setOpen(!this.isOpen()); }
 
-	public boolean isInsertMode() {
-		return this.inventory.getStack(0).isOf(Items.FILLED_MAP);
-	}
-	public boolean isRemoveMode() {
-		return this.inventory.getStack(0).isEmpty();
-	}
+	public boolean isInsertMode() { return this.inventory.getStack(0).isOf(Items.FILLED_MAP); }
+	public boolean isRemoveMode() { return this.inventory.getStack(0).isEmpty(); }
 
 	public void initialize(int parentX, int parentY) {
 		this.parentX = parentX;
@@ -96,8 +89,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
 		int futureSide = this.chunkSide + 20 * (int)amount;
 
-		if (this.isFocused() || futureSide < 30 || futureSide > 330)
-			return false;
+		if (this.isFocused() || futureSide < 30 || futureSide > 330) return false;
 
 		int x = (int)mouseX - this.centerX();
 		int y = (int)mouseY - this.centerY();
@@ -113,33 +105,24 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	}
 
 	public void setFocused(boolean focused) {
-		if (!focused)
-			this.mOffX = this.mOffY = 0;
+		if (!focused) this.mOffX = this.mOffY = 0;
 
 		this.focused = focused;
 	}
 	public boolean isFocused() { return this.focused; }
 
-	public Integer mapId() {
-		return FilledMapItem.getMapId(this.inventory.getStack(0));
-	}
+	public Integer mapId() { return FilledMapItem.getMapId(this.inventory.getStack(0)); }
 	public int inX() { return this.outX() + 5; }
 	public int inY() { return this.outY() + 5; }
 	public int inSide() { return this.side() - 10; }
 	public int outX() { return this.parentX-2 - this.side(); }
 	public int outY() { return this.parentY; }
 	public int side() { return 166; }
-	public int centerX() {
-		return this.inX() + this.inSide()/2 + this.cOffX;
-	}
-	public int centerY() {
-		return this.inY() + this.inSide()/2 + this.cOffY;
-	}
+	public int centerX() { return this.inX() + this.inSide()/2 + this.cOffX; }
+	public int centerY() { return this.inY() + this.inSide()/2 + this.cOffY; }
 	public int chunkSide() { return this.chunkSide; }
 
-	public SelectionType getType() {
-		return this.isOpen() ? SelectionType.HOVERED : SelectionType.NONE;
-	}
+	public SelectionType getType() { return this.isOpen() ? SelectionType.HOVERED : SelectionType.NONE; }
 	public boolean isNarratable() { return false; }
 	public void appendNarrations(NarrationMessageBuilder builder) {}
 }

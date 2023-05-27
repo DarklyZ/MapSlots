@@ -52,12 +52,8 @@ public class Chunk implements Drawable {
 		return buf;
 	}
 
-	private int getTrueX() {
-		return this.region.centerX() + this.offX * this.region.chunkSide();
-	}
-	private int getTrueY() {
-		return this.region.centerY() + this.offY * this.region.chunkSide();
-	}
+	private int getTrueX() { return this.region.centerX() + this.offX * this.region.chunkSide(); }
+	private int getTrueY() { return this.region.centerY() + this.offY * this.region.chunkSide(); }
 
 	private int getX1() {
 		int x = this.getTrueX();
@@ -122,8 +118,7 @@ public class Chunk implements Drawable {
 			float v2 = (float)(y2 - trueY) / side;
 
 			Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-			VertexConsumerProvider.Immediate immediate =
-					VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+			VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 			VertexConsumer vertexConsumer = immediate.getBuffer(this.renderLayer);
 
 			vertexConsumer.vertex(matrix4f, x1, y2, 0.0f).color(255, 255, 255, alpha).texture(u1, v2).light(LightmapTextureManager.MAX_LIGHT_COORDINATE).next();
