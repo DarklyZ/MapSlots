@@ -37,7 +37,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	public void clearAndInit() { super.clearAndInit(); }
 
-	private void updateActiveButtons() {
+	private void updateButtons() {
 		this.mapButton.active = !this.recipeBook.isOpen();
 		this.bookButton.active = !this.mapSlotsWidget.isOpen();
 	}
@@ -55,24 +55,22 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private Element addDrawableChild(InventoryScreen instance, Element element) {
-		this.bookButton = this.addDrawableChild(new TexturedButtonWidget(0, 0, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
+		this.bookButton = this.addDrawableChild(new TexturedButtonWidget(0, this.height / 2 - 22, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
 			this.recipeBook.toggleOpen();
 			this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
 			this.mouseDown = true;
-			this.updateActiveButtons();
+			this.updateButtons();
 		}) {
 			public int getX() { return InventoryScreenMixin.this.x + 104; }
-			public int getY() { return InventoryScreenMixin.this.height / 2 - 22; }
 		});
-		this.mapButton = this.addDrawableChild(new TexturedButtonWidget(0, 0, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
+		this.mapButton = this.addDrawableChild(new TexturedButtonWidget(0, this.height / 2 - 22, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
 			this.mapSlotsWidget.toggleOpen();
 			this.x = this.mapSlotsWidget.getMoveX(this.x);
-			this.updateActiveButtons();
+			this.updateButtons();
 		}) {
-			public int getX() { return InventoryScreenMixin.this.x + (InventoryScreenMixin.this.bookButton.active ? 126 : 104); }
-			public int getY() { return InventoryScreenMixin.this.height / 2 - 22; }
+			public int getX() { return InventoryScreenMixin.this.x + (bookButton.active ? 126 : 104); }
 		});
-		this.updateActiveButtons();
+		this.updateButtons();
 
 		this.addDrawableChild(this.mapSlotsWidget);
 		this.mapSlotsWidget.chunks.forEach(this::addDrawable);

@@ -37,7 +37,7 @@ abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<Craf
 				return super.insertStack(stack, stack.isOf(Items.FILLED_MAP) ? 1 : count);
 			}
 		});
-		this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.side() - 20, 20) {
+		this.addSlot(new Slot(mapSlotsWidget.inventory, 1, -mapSlotsWidget.side() - 20, 18) {
 			public boolean isEnabled() { return mapSlotsWidget.isOpen(); }
 		});
 	}
