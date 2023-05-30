@@ -44,7 +44,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private void init(CallbackInfo ci) {
-		this.mapSlotsWidget.initialize(this.x, this.y);
+		this.mapSlotsWidget.initialize(this.x, this.backgroundHeight, this.height);
 
 		if (this.recipeBook.isOpen()) this.mapSlotsWidget.setOpen(false);
 

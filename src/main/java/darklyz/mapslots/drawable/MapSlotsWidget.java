@@ -24,7 +24,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
 	public final ArrayList<Chunk> chunks = Lists.newArrayList();
 	public final Inventory inventory = new SimpleInventory(2);
-	private int parentX, parentY, mOffX, mOffY, cOffX, cOffY, chunkSide = 30;
+	private int parentX, parentHeight, screenHeight, mOffX, mOffY, cOffX, cOffY, chunkSide = 30;
 	private boolean open = false, focused = false;
 
 	public boolean isOpen() { return this.open; }
@@ -34,9 +34,10 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public boolean isInsertMode() { return this.inventory.getStack(0).isOf(Items.FILLED_MAP); }
 	public boolean isRemoveMode() { return this.inventory.getStack(0).isEmpty(); }
 
-	public void initialize(int parentX, int parentY) {
+	public void initialize(int parentX, int parentHeight, int screenHeight) {
 		this.parentX = parentX;
-		this.parentY = parentY;
+		this.parentHeight = parentHeight;
+		this.screenHeight = screenHeight;
 	}
 
 	public int getMoveX(int parentX) {
@@ -52,7 +53,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 
 		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		drawTexture(matrices, this.outX(), this.outY(), this.side(), this.side(), 0, 0, 64, 64, 64, 64);
 
@@ -112,12 +113,12 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public boolean isFocused() { return this.focused; }
 
 	public Integer mapId() { return FilledMapItem.getMapId(this.inventory.getStack(0)); }
-	public int inX() { return this.outX() + 5; }
-	public int inY() { return this.outY() + 5; }
-	public int inSide() { return this.side() - 10; }
+	public int inX() { return this.outX() + this.side()/32; }
+	public int inY() { return this.outY() + this.side()/32; }
+	public int inSide() { return this.side() - this.side()/16; }
 	public int outX() { return this.parentX-2 - this.side(); }
-	public int outY() { return this.parentY; }
-	public int side() { return 166; }
+	public int outY() { return this.screenHeight/2 - this.side()/2; }
+	public int side() { return this.parentHeight; }
 	public int centerX() { return this.inX() + this.inSide()/2 + this.cOffX; }
 	public int centerY() { return this.inY() + this.inSide()/2 + this.cOffY; }
 	public int chunkSide() { return this.chunkSide; }
