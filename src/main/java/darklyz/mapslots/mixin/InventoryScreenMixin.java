@@ -1,9 +1,9 @@
 package darklyz.mapslots.mixin;
 
 import darklyz.mapslots.MapSlots;
+import darklyz.mapslots.abc.MapSlotsHandler;
 import darklyz.mapslots.abc.MapSlotsScreen;
 import darklyz.mapslots.drawable.MapSlotsWidget;
-import darklyz.mapslots.abc.MapSlotsHandler;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -36,6 +36,9 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 	}
 
 	public void clearAndInit() { super.clearAndInit(); }
+	public int getMSWidgetX() { return this.x-2 - this.getMSWidgetSide(); }
+	public int getMSWidgetY() { return this.height/2 - this.getMSWidgetSide()/2; }
+	public int getMSWidgetSide() { return this.backgroundHeight; }
 
 	private void updateButtons() {
 		this.mapButton.active = !this.recipeBook.isOpen();
@@ -44,11 +47,9 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
 	private void init(CallbackInfo ci) {
-		this.mapSlotsWidget.initialize(this.x, this.backgroundHeight, this.height);
-
 		if (this.recipeBook.isOpen()) this.mapSlotsWidget.setOpen(false);
 
-		if (this.mapSlotsWidget.isOpen()) this.x = this.mapSlotsWidget.getMoveX(this.x);
+		if (this.mapSlotsWidget.isOpen()) this.x += this.getMSWidgetSide() / 2;
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addDrawableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;", ordinal = 0), method = "init")
@@ -63,7 +64,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		});
 		this.mapButton = this.addDrawableChild(new TexturedButtonWidget(0, this.height / 2 - 22, 20, 18, 0, 0, 19, MAP_BUTTON_TEXTURE, (button) -> {
 			this.mapSlotsWidget.toggleOpen();
-			this.x = this.mapSlotsWidget.getMoveX(this.x);
+			this.x += this.getMSWidgetSide() / (this.mapSlotsWidget.isOpen() ? 2 : -2);
 			this.updateButtons();
 		}) {
 			public int getX() { return InventoryScreenMixin.this.x + (bookButton.active ? 126 : 104); }

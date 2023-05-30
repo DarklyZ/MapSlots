@@ -1,8 +1,10 @@
 package darklyz.mapslots.drawable;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import darklyz.mapslots.abc.MapSlotsScreen;
 import darklyz.mapslots.packet.ChunksPacket;
 import darklyz.mapslots.abc.RegionGetter;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
@@ -22,9 +24,10 @@ import java.util.ArrayList;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, RegionGetter {
 	private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
+	private final MinecraftClient client = MinecraftClient.getInstance();
 	public final ArrayList<Chunk> chunks = Lists.newArrayList();
 	public final Inventory inventory = new SimpleInventory(2);
-	private int parentX, parentHeight, screenHeight, mOffX, mOffY, cOffX, cOffY, chunkSide = 30;
+	private int mOffX, mOffY, cOffX, cOffY, chunkSide = 30;
 	private boolean open = false, focused = false;
 
 	public boolean isOpen() { return this.open; }
@@ -33,17 +36,6 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 
 	public boolean isInsertMode() { return this.inventory.getStack(0).isOf(Items.FILLED_MAP); }
 	public boolean isRemoveMode() { return this.inventory.getStack(0).isEmpty(); }
-
-	public void initialize(int parentX, int parentHeight, int screenHeight) {
-		this.parentX = parentX;
-		this.parentHeight = parentHeight;
-		this.screenHeight = screenHeight;
-	}
-
-	public int getMoveX(int parentX) {
-		this.parentX = parentX + this.side()/2 * (this.isOpen() ? 1 : -1);
-		return this.parentX;
-	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		if (!this.isOpen()) return;
@@ -64,7 +56,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	}
 
 	public boolean isClickOutsideBounds(double mouseX, double mouseY) {
-		return !this.isOpen() || mouseX < this.outX()-18 || mouseY < this.outY() || mouseX > this.outX() + this.side() || mouseY > this.outY() + this.side();
+		return !this.isOpen() || mouseX < this.outX() || mouseY < this.outY() || mouseX > this.outX() + this.side() || mouseY > this.outY() + this.side();
 	}
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		return this.isOpen() && mouseX >= this.inX() && mouseY >= this.inY() && mouseX <= this.inX() + this.inSide() && mouseY <= this.inY() + this.inSide();
@@ -116,9 +108,15 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public int inX() { return this.outX() + this.side()/32; }
 	public int inY() { return this.outY() + this.side()/32; }
 	public int inSide() { return this.side() - this.side()/16; }
-	public int outX() { return this.parentX-2 - this.side(); }
-	public int outY() { return this.screenHeight/2 - this.side()/2; }
-	public int side() { return this.parentHeight; }
+	public int outX() {
+		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetX() : 0;
+	}
+	public int outY() {
+		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetY() : 0;
+	}
+	public int side() {
+		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetSide() : 0;
+	}
 	public int centerX() { return this.inX() + this.inSide()/2 + this.cOffX; }
 	public int centerY() { return this.inY() + this.inSide()/2 + this.cOffY; }
 	public int chunkSide() { return this.chunkSide; }
