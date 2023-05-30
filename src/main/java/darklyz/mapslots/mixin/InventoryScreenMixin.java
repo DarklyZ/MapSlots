@@ -37,7 +37,7 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 
 	public void clearAndInit() { super.clearAndInit(); }
 	public int getMSWidgetX() { return this.x-2 - this.getMSWidgetSide(); }
-	public int getMSWidgetY() { return this.height/2 - this.getMSWidgetSide()/2; }
+	public int getMSWidgetY() { return (this.height - this.getMSWidgetSide()) / 2; }
 	public int getMSWidgetSide() { return this.backgroundHeight; }
 
 	private void updateButtons() {
