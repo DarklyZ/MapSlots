@@ -1,6 +1,6 @@
 package darklyz.mapslots;
 
-import darklyz.mapslots.packet.ChunksPacket;
+import darklyz.mapslots.module.ChunksPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

@@ -1,6 +1,6 @@
 package darklyz.mapslots.mixin;
 
-import darklyz.mapslots.drawable.MapSlotsWidget;
+import darklyz.mapslots.gui.MapSlotsWidget;
 import darklyz.mapslots.abc.MapSlotsHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

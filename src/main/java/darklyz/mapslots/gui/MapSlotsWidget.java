@@ -1,8 +1,9 @@
-package darklyz.mapslots.drawable;
+package darklyz.mapslots.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import darklyz.mapslots.abc.MapSlotsScreen;
-import darklyz.mapslots.packet.ChunksPacket;
+import darklyz.mapslots.module.Chunk;
+import darklyz.mapslots.module.ChunksPacket;
 import darklyz.mapslots.abc.RegionGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -51,6 +52,8 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 
 		if (this.isMouseOver(mouseX, mouseY) && this.isInsertMode())
 			new Chunk(this, mouseX, mouseY).drawMap(matrices, 120);
+
+		this.chunks.forEach(chunk -> chunk.drawMap(matrices, 255));
 
 		matrices.pop();
 	}

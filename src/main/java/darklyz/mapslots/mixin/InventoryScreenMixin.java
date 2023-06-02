@@ -3,7 +3,7 @@ package darklyz.mapslots.mixin;
 import darklyz.mapslots.MapSlots;
 import darklyz.mapslots.abc.MapSlotsHandler;
 import darklyz.mapslots.abc.MapSlotsScreen;
-import darklyz.mapslots.drawable.MapSlotsWidget;
+import darklyz.mapslots.gui.MapSlotsWidget;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -35,7 +35,6 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		super(screenHandler, playerInventory, text);
 	}
 
-	public void clearAndInit() { super.clearAndInit(); }
 	public int getMSWidgetX() { return this.x-2 - this.getMSWidgetSide(); }
 	public int getMSWidgetY() { return (this.height - this.getMSWidgetSide()) / 2; }
 	public int getMSWidgetSide() { return this.backgroundHeight; }
@@ -72,7 +71,6 @@ abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreen
 		this.updateButtons();
 
 		this.addDrawableChild(this.mapSlotsWidget);
-		this.mapSlotsWidget.chunks.forEach(this::addDrawable);
 		return this.bookButton;
 	}
 

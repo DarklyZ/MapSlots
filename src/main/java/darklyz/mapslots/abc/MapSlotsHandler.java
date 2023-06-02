@@ -1,6 +1,6 @@
 package darklyz.mapslots.abc;
 
-import darklyz.mapslots.drawable.MapSlotsWidget;
+import darklyz.mapslots.gui.MapSlotsWidget;
 
 public interface MapSlotsHandler {
 	MapSlotsWidget getMSWidget();

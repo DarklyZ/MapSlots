@@ -1,10 +1,9 @@
-package darklyz.mapslots.drawable;
+package darklyz.mapslots.module;
 
 import darklyz.mapslots.abc.RegionGetter;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,7 +16,7 @@ import org.joml.Matrix4f;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Chunk implements Drawable {
+public class Chunk {
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	private final RegionGetter region;
 	public final Integer mapId;
@@ -77,17 +76,6 @@ public class Chunk implements Drawable {
 		try (MapTexture mapTexture = new MapTexture(this.client, this.mapId)) {
 			mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
 		}
-	}
-
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		if (!this.region.isOpen()) return;
-
-		matrices.push();
-		matrices.translate(0.0f, 0.0f, 100.1f);
-
-		this.drawMap(matrices, 255);
-
-		matrices.pop();
 	}
 
 	private static class MapTexture implements AutoCloseable {
