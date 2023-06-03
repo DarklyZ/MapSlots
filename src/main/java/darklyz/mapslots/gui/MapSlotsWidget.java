@@ -51,9 +51,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 		drawTexture(matrices, this.outX(), this.outY(), this.side(), this.side(), 0, 0, 64, 64, 64, 64);
 
 		if (this.isMouseOver(mouseX, mouseY) && this.isInsertMode())
-			new Chunk(this, mouseX, mouseY).drawMap(matrices, 120);
+			new Chunk(this, mouseX, mouseY).drawMap(matrices, this.client, 120);
 
-		this.chunks.forEach(chunk -> chunk.drawMap(matrices, 255));
+		this.chunks.forEach(chunk -> chunk.drawMap(matrices, this.client, 255));
 
 		matrices.pop();
 	}
