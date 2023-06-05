@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, RegionGetter {
 	private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
@@ -74,6 +75,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 		return true;
 	}
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		if (Stream.of("key.mouse.left", "key.mouse.right").allMatch(key -> InputUtil.fromTranslationKey(key).getCode() != button))
+			return false;
+
 		ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
 		return true;
 	}

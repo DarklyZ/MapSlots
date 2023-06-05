@@ -42,7 +42,7 @@ public class ChunksPacket {
 		Chunk chunk = new Chunk(mSWidget, buf);
 		int button = buf.readInt();
 
-		if (!Objects.equals(chunk.mapId, mSWidget.mapId())) return;
+		if (!Objects.equals(mSWidget.mapId(), chunk.mapId)) return;
 
 		server.execute(() -> {
 			int index = mSWidget.chunks.indexOf(chunk);
