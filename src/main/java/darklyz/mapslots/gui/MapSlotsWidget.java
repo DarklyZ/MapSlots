@@ -2,16 +2,15 @@ package darklyz.mapslots.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import darklyz.mapslots.abc.MapSlotsScreen;
+import darklyz.mapslots.abc.RegionGetter;
 import darklyz.mapslots.module.Chunk;
 import darklyz.mapslots.module.ChunksPacket;
-import darklyz.mapslots.abc.RegionGetter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
@@ -45,9 +44,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 		matrices.push();
 		matrices.translate(0.0f, 0.0f, 100.0f);
 
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		drawTexture(matrices, this.outX(), this.outY(), this.side(), this.side(), 0, 0, 64, 64, 64, 64);
 
