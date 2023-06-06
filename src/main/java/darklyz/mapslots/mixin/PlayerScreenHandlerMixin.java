@@ -1,7 +1,7 @@
 package darklyz.mapslots.mixin;
 
 import darklyz.mapslots.gui.MapSlotsWidget;
-import darklyz.mapslots.abc.MapSlotsHandler;
+import darklyz.mapslots.module.ChunkSync;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerScreenHandler.class)
-abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements MapSlotsHandler {
+abstract class PlayerScreenHandlerMixin extends AbstractRecipeScreenHandler<CraftingInventory> implements ChunkSync.Extractor {
 	private final MapSlotsWidget mapSlotsWidget = new MapSlotsWidget();
 
 	private PlayerScreenHandlerMixin(ScreenHandlerType<?> screenHandlerType, int i) { super(screenHandlerType, i); }

@@ -1,10 +1,8 @@
 package darklyz.mapslots.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import darklyz.mapslots.abc.MapSlotsScreen;
-import darklyz.mapslots.abc.RegionGetter;
 import darklyz.mapslots.module.Chunk;
-import darklyz.mapslots.module.ChunksPacket;
+import darklyz.mapslots.module.ChunkSync;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
@@ -23,7 +21,13 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, RegionGetter {
+public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, Chunk.RegionGetter {
+	public interface Extractor {
+		int getMSWidgetX();
+		int getMSWidgetY();
+		int getMSWidgetSide();
+	}
+
 	private static final Identifier TEXTURE = new Identifier("textures/map/map_background.png");
 	private final MinecraftClient client = MinecraftClient.getInstance();
 	public final ArrayList<Chunk> chunks = Lists.newArrayList();
@@ -75,7 +79,7 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 		if (Stream.of("key.mouse.left", "key.mouse.right").allMatch(key -> InputUtil.fromTranslationKey(key).getCode() != button))
 			return false;
 
-		ChunksPacket.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
+		ChunkSync.sendC2S(new Chunk(this, (int)mouseX, (int)mouseY), button);
 		return true;
 	}
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
@@ -112,15 +116,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public int inX() { return this.outX() + this.side()/32; }
 	public int inY() { return this.outY() + this.side()/32; }
 	public int inSide() { return this.side() - this.side()/16; }
-	public int outX() {
-		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetX() : 0;
-	}
-	public int outY() {
-		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetY() : 0;
-	}
-	public int side() {
-		return (this.client.currentScreen instanceof MapSlotsScreen screen) ? screen.getMSWidgetSide() : 0;
-	}
+	public int outX() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetX() : 0; }
+	public int outY() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetY() : 0; }
+	public int side() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetSide() : 0; }
 	public int centerX() { return this.inX() + this.inSide()/2 + this.cOffX; }
 	public int centerY() { return this.inY() + this.inSide()/2 + this.cOffY; }
 	public int chunkSide() { return this.chunkSide; }

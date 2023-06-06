@@ -1,7 +1,6 @@
 package darklyz.mapslots.module;
 
 import darklyz.mapslots.MapSlots;
-import darklyz.mapslots.abc.MapSlotsHandler;
 import darklyz.mapslots.gui.MapSlotsWidget;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -19,8 +18,12 @@ import net.minecraft.util.Identifier;
 
 import java.util.Objects;
 
-public class ChunksPacket {
-	public static final Identifier ID = new Identifier(MapSlots.LOGGER.getName(), "chunks");
+public class ChunkSync {
+	public interface Extractor {
+		MapSlotsWidget getMSWidget();
+	}
+
+	public static final Identifier ID = new Identifier(MapSlots.LOGGER.getName(), "chunksync");
 
 	public static void sendC2S(Chunk chunk, int button) {
 		PacketByteBuf buf = chunk.toBuffer();
@@ -38,7 +41,7 @@ public class ChunksPacket {
 	                             ServerPlayNetworkHandler ignoredNetwork,
 	                             PacketByteBuf buf,
 	                             PacketSender ignoredSender) {
-		MapSlotsWidget mSWidget = ((MapSlotsHandler)player.playerScreenHandler).getMSWidget();
+		MapSlotsWidget mSWidget = ((Extractor)player.playerScreenHandler).getMSWidget();
 		Chunk chunk = new Chunk(mSWidget, buf);
 		int button = buf.readInt();
 
@@ -68,11 +71,12 @@ public class ChunksPacket {
 	                             PacketSender ignoredSender) {
 		if (client.player == null) return;
 
-		MapSlotsWidget mSWidget = ((MapSlotsHandler)client.player.playerScreenHandler).getMSWidget();
+		MapSlotsWidget mSWidget = ((Extractor)client.player.playerScreenHandler).getMSWidget();
 		Chunk chunk = new Chunk(mSWidget, buf);
 
 		client.execute(() -> {
-			if (chunk.mapId != null) mSWidget.chunks.add(chunk); else mSWidget.chunks.remove(chunk);
+			if (chunk.mapId != null) mSWidget.chunks.add(chunk);
+			else mSWidget.chunks.remove(chunk);
 		});
 	}
 }

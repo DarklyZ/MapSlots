@@ -1,25 +1,46 @@
 package darklyz.mapslots.module;
 
-import darklyz.mapslots.abc.RegionGetter;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.MapColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.map.MapState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public class Chunk {
+	public interface RegionGetter {
+		boolean isOpen();
+		Integer mapId();
+		int inX();
+		int inY();
+		int inSide();
+		int outX();
+		int outY();
+		int side();
+		int centerX();
+		int centerY();
+		int chunkSide();
+	}
+	public interface UpdateManager {
+		boolean isNeedsUpdate();
+		void setNeedsUpdate(boolean needsUpdate);
+	}
+
 	private final RegionGetter region;
 	public final Integer mapId;
 	private final int offX, offY;
+	private MapTexture mapTexture;
 
 	public Chunk(RegionGetter region, Integer mapId, int offX, int offY) {
 		this.region = region;
@@ -72,32 +93,42 @@ public class Chunk {
 	}
 
 	public void drawMap(MatrixStack matrices, MinecraftClient client, int alpha) {
-		try (MapTexture mapTexture = new MapTexture(client, this.mapId)) {
-			mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
-		}
+		MapState state = FilledMapItem.getMapState(this.mapId, client.world);
+		if (state == null) return;
+
+		if (this.mapTexture == null)
+			this.mapTexture = new MapTexture(client.getTextureManager(), state, this.mapId);
+
+		this.mapTexture.draw(matrices, this.getX1(), this.getY1(), this.getX2(), this.getY2(), this.getTrueX(), this.getTrueY(), this.region.chunkSide(), alpha);
 	}
 
 	private static class MapTexture implements AutoCloseable {
-		private final MapState state;
+		@NotNull private final MapState state;
 		private final NativeImageBackedTexture texture;
 		private final RenderLayer renderLayer;
 
-		private MapTexture(MinecraftClient client, Integer mapId) {
-			this.state = FilledMapItem.getMapState(mapId, client.world);
+		private MapTexture(TextureManager textureManager, @NotNull MapState state, Integer mapId) {
+			((UpdateManager)state).setNeedsUpdate(true);
+
+			this.state = state;
 			this.texture = new NativeImageBackedTexture(128, 128, true);
-			Identifier identifier = client.getTextureManager().registerDynamicTexture("mapslots/" + mapId, this.texture);
+			Identifier identifier = textureManager.registerDynamicTexture("mapslots/" + mapId, this.texture);
 			this.renderLayer = RenderLayer.getText(identifier);
 		}
 
 		private void updateTexture() {
-			if (this.texture.getImage() != null && this.state != null)
-				for (int y = 0; y < 128; y++) for (int x = 0; x < 128; x++)
-					this.texture.getImage().setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
+			NativeImage image = Objects.requireNonNull(this.texture.getImage());
+			for (int y = 0; y < 128; y++) for (int x = 0; x < 128; x++)
+				image.setColor(x, y, MapColor.getRenderColor(this.state.colors[x + y * 128]));
 			this.texture.upload();
 		}
 
 		private void draw(MatrixStack matrices, int x1, int y1, int x2, int y2, int trueX, int trueY, int side, int alpha) {
-			this.updateTexture();
+			UpdateManager update = (UpdateManager)this.state;
+			if (update.isNeedsUpdate()) {
+				this.updateTexture();
+				update.setNeedsUpdate(false);
+			}
 
 			float u1 = (float)(x1 - trueX) / side;
 			float v1 = (float)(y1 - trueY) / side;
