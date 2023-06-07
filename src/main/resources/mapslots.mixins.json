@@ -4,6 +4,7 @@
   "package": "darklyz.mapslots.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MapStateMixin",
     "PlayerScreenHandlerMixin"
   ],
   "client": [
