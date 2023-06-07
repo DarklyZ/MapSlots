@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class MapSlotsWidget extends DrawableHelper implements Drawable, Element, Selectable, Chunk.RegionGetter {
-	public interface Extractor {
+	public interface Giving {
+		MapSlotsWidget getMSWidget();
+	}
+	public interface Coordinating {
 		int getMSWidgetX();
 		int getMSWidgetY();
 		int getMSWidgetSide();
@@ -116,9 +119,9 @@ public class MapSlotsWidget extends DrawableHelper implements Drawable, Element,
 	public int inX() { return this.outX() + this.side()/32; }
 	public int inY() { return this.outY() + this.side()/32; }
 	public int inSide() { return this.side() - this.side()/16; }
-	public int outX() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetX() : 0; }
-	public int outY() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetY() : 0; }
-	public int side() { return (this.client.currentScreen instanceof Extractor screen) ? screen.getMSWidgetSide() : 0; }
+	public int outX() { return (this.client.currentScreen instanceof Coordinating screen) ? screen.getMSWidgetX() : 0; }
+	public int outY() { return (this.client.currentScreen instanceof Coordinating screen) ? screen.getMSWidgetY() : 0; }
+	public int side() { return (this.client.currentScreen instanceof Coordinating screen) ? screen.getMSWidgetSide() : 0; }
 	public int centerX() { return this.inX() + this.inSide()/2 + this.cOffX; }
 	public int centerY() { return this.inY() + this.inSide()/2 + this.cOffY; }
 	public int chunkSide() { return this.chunkSide; }

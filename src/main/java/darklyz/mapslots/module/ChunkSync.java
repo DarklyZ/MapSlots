@@ -19,10 +19,6 @@ import net.minecraft.util.Identifier;
 import java.util.Objects;
 
 public class ChunkSync {
-	public interface Extractor {
-		MapSlotsWidget getMSWidget();
-	}
-
 	public static final Identifier ID = new Identifier(MapSlots.LOGGER.getName(), "chunksync");
 
 	public static void sendC2S(Chunk chunk, int button) {
@@ -41,7 +37,7 @@ public class ChunkSync {
 	                             ServerPlayNetworkHandler ignoredNetwork,
 	                             PacketByteBuf buf,
 	                             PacketSender ignoredSender) {
-		MapSlotsWidget mSWidget = ((Extractor)player.playerScreenHandler).getMSWidget();
+		MapSlotsWidget mSWidget = ((MapSlotsWidget.Giving)player.playerScreenHandler).getMSWidget();
 		Chunk chunk = new Chunk(mSWidget, buf);
 		int button = buf.readInt();
 
@@ -71,7 +67,7 @@ public class ChunkSync {
 	                             PacketSender ignoredSender) {
 		if (client.player == null) return;
 
-		MapSlotsWidget mSWidget = ((Extractor)client.player.playerScreenHandler).getMSWidget();
+		MapSlotsWidget mSWidget = ((MapSlotsWidget.Giving)client.player.playerScreenHandler).getMSWidget();
 		Chunk chunk = new Chunk(mSWidget, buf);
 
 		client.execute(() -> {

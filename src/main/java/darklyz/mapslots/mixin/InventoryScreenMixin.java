@@ -2,7 +2,6 @@ package darklyz.mapslots.mixin;
 
 import darklyz.mapslots.MapSlots;
 import darklyz.mapslots.gui.MapSlotsWidget;
-import darklyz.mapslots.module.ChunkSync;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -22,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InventoryScreen.class)
-abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements MapSlotsWidget.Extractor {
+abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> implements MapSlotsWidget.Coordinating {
 	private static final Identifier MAP_BUTTON_TEXTURE = new Identifier(MapSlots.LOGGER.getName(), "textures/gui/map_button.png");
-	private final MapSlotsWidget mapSlotsWidget = ((ChunkSync.Extractor)this.getScreenHandler()).getMSWidget();
+	private final MapSlotsWidget mapSlotsWidget = ((MapSlotsWidget.Giving)this.getScreenHandler()).getMSWidget();
 	private TexturedButtonWidget bookButton, mapButton;
 	@Shadow @Final private static Identifier RECIPE_BUTTON_TEXTURE;
 	@Shadow @Final private RecipeBookWidget recipeBook;
